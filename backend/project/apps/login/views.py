@@ -11,7 +11,7 @@ import datetime
 class AuthView(APIView):
 
     authentication_classes = []
-    permission_classes = [permissions.AllowAny] # make this endpoint public
+    permission_classes = [permissions.AllowAny]  # make this endpoint public
 
     @method_decorator(ensure_csrf_cookie, name='dispatch')
     def post(self, request):

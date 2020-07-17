@@ -4,6 +4,8 @@ from .serializers import EventSerializer, FullEventSerializer
 from rest_framework.response import Response
 from rest_framework import mixins
 from rest_framework import generics
+from requests import get
+from rest_framework import permissions
 
 
 class AllEvents(APIView):
@@ -42,7 +44,7 @@ class EventDetails(mixins.RetrieveModelMixin,
         print(type(queryset))
         serializer = self.serializer_class(data=queryset, many=True)
         serializer.is_valid()
-        return Response(serializer.data[0])
+        return Response(serializer.data[0])  # return only the object not the array containing object
 
     def post(self, request):
         """
@@ -68,5 +70,22 @@ class EventDetails(mixins.RetrieveModelMixin,
         return Response(serializer.data)
 
 
+class Locations(APIView):
+
+    authentication_classes = []
+    permission_classes = [permissions.AllowAny]
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.url = 'https://rajapinnat.ymparisto.fi/api/Hakemistorajapinta/1.0/odata/Kunta'
+
+    def get(self, request):
+        locations_raw = get(self.url).json()
+        locations = locations_raw['value']
+        res_arr = []
+        for location in locations:
+            county = {"name": location['Nimi']}
+            res_arr.append(county)
+        return Response(res_arr)
 
 
