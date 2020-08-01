@@ -25,6 +25,29 @@ class FishingEvent(models.Model):
         instance = FishingEvent.objects.get(pk=pk)  # return specific event by user_id AND event's id
         return instance
 
+
+class FishingTechnique(models.Model):
+    CASTING = 'Casting'
+    FLY_FISHING = 'Fly fishing'
+    TROLLING = "Trolling"
+    NET_FISHING = 'Net fishing'
+    POLE_FISHING = 'Pole fishing'
+    METHOD_CHOICES = [
+        (CASTING, 'Heittokalastus'),
+        (FLY_FISHING, 'Perhokalastus'),
+        (TROLLING, 'Vetouistelu'),
+        (NET_FISHING, 'Verkko'),
+        (POLE_FISHING, 'Onki')
+    ]
+    fishing_method = models.CharField(max_length=20, choices=METHOD_CHOICES, default=None, null=True, blank=True)
+    method_details = models.TextField(default=None, null=True, blank=True)
+    fishing_event = models.ForeignKey(FishingEvent, related_name='stats', on_delete=models.CASCADE)
+
+    def __str__(self):
+        name = '(' + str(self.fishing_event) + ') ' + self.fishing_method
+        return name
+
+
 class FishCatch(models.Model):
     BREAM = 'Bream'
     PERCH = 'Perch'
@@ -44,6 +67,20 @@ class FishCatch(models.Model):
         (DEFAULT, 'Muu'),
         (NONE, 'Ei saalista'),
     ]
+    JIG = 'Jig'
+    SPINNER = 'Spinner'
+    SPOONLURE = 'Spoon lure'
+    WOBBLER = 'Wobbler'
+    LURE_CHOICES = [
+        (JIG, 'Jigi'),
+        (SPINNER, 'Lippa'),
+        (SPOONLURE, 'Lusikka'),
+        (WOBBLER, 'Vaappu'),
+        (NONE, 'Ei viehettä')
+    ]
     fish_species = models.CharField(max_length=20, choices=FISH_CHOICES, default=None, null=True, blank=True)
-    amount = models.IntegerField()
-    fishing_event = models.ForeignKey(FishingEvent, related_name='catches', on_delete=models.CASCADE)
+    fish_details = models.TextField(default=None, null=True, blank=True)
+    lure = models.CharField(max_length=20, choices=LURE_CHOICES, default=None, null=True, blank=True)
+    lure_details = models.TextField(default=None, null=True, blank=True)
+    fishing_technique = models.ForeignKey(FishingTechnique, related_name='catches', on_delete=models.CASCADE)
+

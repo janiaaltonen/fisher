@@ -53,7 +53,6 @@ class EventDetails(mixins.RetrieveModelMixin,
         data = request.data
         serializer = self.serializer_class(data=data)
         if serializer.is_valid():
-            print(serializer.validated_data)
             serializer.save(user_id=request.user.id)  # save() method used to invoke serializer's create() method
         return Response(serializer.data)
 
