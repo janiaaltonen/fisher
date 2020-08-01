@@ -2,7 +2,7 @@ from rest_framework.views import APIView
 from django.contrib.auth import authenticate
 from rest_framework.response import Response
 from rest_framework import exceptions, permissions, authentication
-from .utils import generate_access_token, generate_refresh_token, CustomResponse
+from .utils import CookieResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import ensure_csrf_cookie
 import datetime
@@ -18,9 +18,8 @@ class AuthView(APIView):
     def post(self, request):
         username = request.data.get('username')
         password = request.data.get('password')
-        cr = CustomResponse(username, password)
+        cr = CookieResponse(username, password)
         cr.set_data({'detail': 'login successful'})
-
         return cr.response
 
 
@@ -35,6 +34,13 @@ class SignUp(APIView):
             form.save()
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password1')
+            cr = CookieResponse(username, password)
+            cr.set_data({'detail': 'User created and login successful'})
+            return cr.response
+        else:
+            # form = UserCreationForm()
+            # print(form.errors.get_json_data(escape_html=True)) escaped ver.
+            return Response(form.errors.as_json())
 
 
 

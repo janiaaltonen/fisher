@@ -6,6 +6,7 @@ from rest_framework import exceptions
 from django.contrib.auth import authenticate
 import datetime
 
+
 def generate_access_token(user):
 
     payload = {
@@ -27,7 +28,8 @@ def generate_refresh_token(user):
     refresh_token = jwt.encode(payload, settings.SECRET_KEY, algorithm='HS256').decode('utf-8')
     return refresh_token
 
-class CustomResponse:
+
+class CookieResponse:
 
     def __init__(self, username, password):
         self.response = Response()
