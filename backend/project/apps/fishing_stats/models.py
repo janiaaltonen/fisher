@@ -25,6 +25,14 @@ class FishingEvent(models.Model):
         instance = FishingEvent.objects.get(pk=pk)  # return specific event by user_id AND event's id
         return instance
 
+    def delete_event(self, pk):
+        try:
+            instance = FishingEvent.objects.get(pk=pk)
+            instance.delete()
+            return True
+        except self.DoesNotExist:
+            return False
+
 
 class FishingTechnique(models.Model):
     CASTING = 'Casting'
@@ -46,6 +54,14 @@ class FishingTechnique(models.Model):
     def __str__(self):
         name = '(' + str(self.fishing_event) + ') ' + self.fishing_method
         return name
+
+    def delete_technique(self, pk):
+        try:
+            instance = FishingTechnique.objects.get(pk=pk)
+            instance.delete()
+            return True
+        except self.DoesNotExist:
+            return False
 
 
 class FishCatch(models.Model):
@@ -83,4 +99,12 @@ class FishCatch(models.Model):
     lure = models.CharField(max_length=20, choices=LURE_CHOICES, default=None, null=True, blank=True)
     lure_details = models.TextField(default=None, null=True, blank=True)
     fishing_technique = models.ForeignKey(FishingTechnique, related_name='catches', on_delete=models.CASCADE)
+
+    def delete_catch(self, pk):
+        try:
+            instance = FishCatch.objects.get(pk=pk)
+            instance.delete()
+            return True
+        except self.DoesNotExist:
+            return False
 

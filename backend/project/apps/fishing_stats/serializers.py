@@ -8,7 +8,7 @@ class CatchSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = FishCatch
-        fields = ['fish_species', 'fish_details', 'lure', 'lure_details']
+        fields = ['id', 'fish_species', 'fish_details', 'lure', 'lure_details']
 
     def to_internal_value(self, data):
         return data
@@ -20,7 +20,7 @@ class StatsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = FishingTechnique
-        fields = ['fishing_method', 'catches']
+        fields = ['id', 'fishing_method', 'catches']
 
     def to_internal_value(self, data):
         return data

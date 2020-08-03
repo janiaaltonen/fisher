@@ -1,8 +1,8 @@
 from rest_framework.views import APIView
-from .models import FishingEvent
+from .models import FishingEvent, FishingTechnique, FishCatch
 from .serializers import EventSerializer, FullEventSerializer
 from rest_framework.response import Response
-from rest_framework import mixins
+from rest_framework import mixins, status
 from rest_framework import generics
 from requests import get
 from rest_framework import permissions
@@ -19,10 +19,8 @@ class AllEvents(APIView):
                 ]
         if query has 1 or more results
         """
-        user = request.user
-        user_id = user.id
         fe = FishingEvent()
-        queryset = fe.get_events(user_id)
+        queryset = fe.get_events(self.request.user.id)
         serializer = EventSerializer(queryset, many=True)
         return Response(serializer.data)
 
@@ -30,6 +28,7 @@ class AllEvents(APIView):
 class EventDetails(mixins.RetrieveModelMixin,
                    mixins.CreateModelMixin,
                    mixins.UpdateModelMixin,
+                   mixins.DestroyModelMixin,
                    generics.GenericAPIView):
 
     serializer_class = FullEventSerializer
@@ -54,7 +53,7 @@ class EventDetails(mixins.RetrieveModelMixin,
         serializer = self.serializer_class(data=data)
         if serializer.is_valid():
             serializer.save(user_id=request.user.id)  # save() method used to invoke serializer's create() method
-        return Response(serializer.data)
+        return Response(serializer.data, status.HTTP_201_CREATED)
 
     def put(self, request):
         """
@@ -63,10 +62,39 @@ class EventDetails(mixins.RetrieveModelMixin,
         data = request.data
         fe = FishingEvent()
         instance = fe.get_event_as_instance(self.request.query_params['id'])
-        serializer = self.serializer_class(instance, data=data)  # if PATCH wanted in this method then partial=True needed
+        serializer = self.serializer_class(instance, data=data, partial=True)  # if PATCH wanted in this method then partial=True needed
         serializer.is_valid()
         serializer.save()
         return Response(serializer.data)
+
+    def delete(self, request):
+        """
+         Deletes whole event, fishing technique in it or fish catch in it
+         depending on the url params given
+        """
+        event_id = self.request.query_params['id']
+        tech_id = self.request.query_params['tech']
+        catch_id = self.request.query_params['catch']
+
+        if tech_id == '0' and catch_id == '0':
+            fe = FishingEvent()
+            successful = fe.delete_event(event_id)
+            return self.delete_response(successful)
+        elif tech_id != '0':
+            ft = FishingTechnique()
+            successful = ft.delete_technique(tech_id)
+            return self.delete_response(successful)
+        else:
+            fc = FishCatch()
+            successful = fc.delete_catch(catch_id)
+            return self.delete_response(successful)
+
+    def delete_response(self, successful):
+        if successful:
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+
 
 
 class Locations(APIView):
