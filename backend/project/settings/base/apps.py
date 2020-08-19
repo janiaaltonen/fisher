@@ -9,4 +9,5 @@ INSTALLED_APPS = [
     # 'project.apps.myapp',
     'project.apps.login',
     'project.apps.fishing_stats',
+    'corsheaders'
 ]
