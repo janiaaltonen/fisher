@@ -46,6 +46,24 @@ class JWTAuthentication(BaseAuthentication):
         # populates request.META['CSRF_COOKIE'], which is used in process_view()
         check.process_request(request)
         reason = check.process_view(request, None, (), {})
-        print(reason)
+        # print(reason)
         if reason:
             raise exceptions.PermissionDenied('CSRF Failed: %s' % reason)
+
+    def check_refresh_token(self, request):
+        User = get_user_model()
+        refresh_token = request.COOKIES.get('refresh_token')
+        if refresh_token is None:
+            raise exceptions.AuthenticationFailed()
+        try:
+            payload = jwt.decode(
+                refresh_token, security.SECRET_KEY, algorithms=['HS256']
+            )
+        except jwt.ExpiredSignatureError:
+            raise exceptions.AuthenticationFailed('Refresh token expired')
+        user = User.objects.filter(id=payload['user_id']).first()
+        if user is None:
+            raise exceptions.AuthenticationFailed('User not found')
+        if not user.is_active:
+            raise exceptions.AuthenticationFailed('User is inactive')
+        return user

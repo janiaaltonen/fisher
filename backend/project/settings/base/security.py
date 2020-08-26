@@ -7,6 +7,8 @@ CORS_ORIGIN_WHITELIST = [
     'http://localhost:4200'
 ]
 
+CORS_ALLOW_CREDENTIALS = True
+
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
