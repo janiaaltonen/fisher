@@ -20,18 +20,16 @@ export class ErrorInterceptor implements HttpInterceptor {
       catchError(err => {
         if (err instanceof HttpErrorResponse) {
           if (err.status === 403 && err.error.detail === 'Access credentials were not provided') {
-            console.log('HERE');
-            return this.handleThis(request, next);
+            return this.handleAuthTokenError(request, next);
           }
         }
         return throwError(err);
       }));
   }
-  handleThis(request: HttpRequest<any>, next: HttpHandler) {
+  handleAuthTokenError(request: HttpRequest<any>, next: HttpHandler) {
     return this.auth.obtainAccessToken().pipe(
       switchMap((data: string) => {
         if (data) {
-          request = request.clone();
           return next.handle(request);
         }
       }));

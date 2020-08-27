@@ -27,11 +27,11 @@ export class AuthenticationService {
       username: user,
       password: pass
     };
-    return this.http.post(this.baseUrl + '/auth', body, {headers: this.httpHeaders})
-      .pipe(map(data => {
-        localStorage.setItem('user', JSON.stringify(data));
-        this.userSubject.next(data);
-        return data;
+    return this.http.post(this.baseUrl + '/auth', body, {headers: this.httpHeaders, observe: 'response'})
+      .pipe(map(resp => {
+        localStorage.setItem('user', JSON.stringify(resp.body));
+        this.userSubject.next(resp.body);
+        return resp.body;
       }));
   }
   obtainAccessToken(): Observable<any> {
