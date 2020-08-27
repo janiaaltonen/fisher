@@ -35,7 +35,7 @@ class CookieResponse:
         self.response = Response()
         self.user = None
 
-    def authenticate_user(self, username, password):
+    def is_authenticated(self, username, password):
         if username is None or password is None:
             raise exceptions.AuthenticationFailed
         self.user = authenticate(username=username, password=password)

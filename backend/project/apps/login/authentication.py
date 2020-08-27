@@ -21,7 +21,7 @@ class JWTAuthentication(BaseAuthentication):
         User = get_user_model()
         access_token = request.COOKIES.get('access_token')
         if access_token is None:
-            raise exceptions.AuthenticationFailed('Credentials were not proved')
+            raise exceptions.AuthenticationFailed('Access credentials were not provided')
         try:
             payload = jwt.decode(
                 access_token, security.SECRET_KEY, algorithms=['HS256']

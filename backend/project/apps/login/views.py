@@ -20,7 +20,7 @@ class AuthView(APIView):
         username = request.data.get('username')
         password = request.data.get('password')
         cr = CookieResponse()
-        if cr.authenticate_user(username, password):
+        if cr.is_authenticated(username, password):
             cr.generate_tokens()
         cr.set_data({'detail': 'login successful'})
         return cr.response
@@ -28,9 +28,10 @@ class AuthView(APIView):
 
 class RefreshView(APIView):
 
+    authentication_classes = []
     permission_classes = [permissions.AllowAny]
 
-    @method_decorator(csrf_protect)
+    #@method_decorator(csrf_protect)
     def post(self, request):
         auth = JWTAuthentication()
         user = auth.check_refresh_token(request)
@@ -56,7 +57,7 @@ class SignUp(APIView):
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password1')
             cr = CookieResponse()
-            if cr.authenticate_user(username, password):
+            if cr.is_authenticated(username, password):
                 cr.generate_tokens()
             cr.set_data({'detail': 'User created and login successful'})
             return cr.response

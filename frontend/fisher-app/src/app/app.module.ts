@@ -6,7 +6,7 @@ import { AppComponent } from './app.component';
 import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {ReactiveFormsModule} from '@angular/forms';
 import { LoginComponent } from './login/login.component';
-import {TokenInterceptor} from './_helpers/token.interceptor';
+import { ErrorInterceptor, TokenInterceptor } from '@app/_helpers';
 
 @NgModule({
   declarations: [
@@ -20,7 +20,8 @@ import {TokenInterceptor} from './_helpers/token.interceptor';
     ReactiveFormsModule
   ],
   providers: [
-    {provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true}
+    {provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true},
+    {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true}
   ],
   bootstrap: [AppComponent]
 })
