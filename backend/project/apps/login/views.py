@@ -31,7 +31,7 @@ class RefreshView(APIView):
     authentication_classes = []
     permission_classes = [permissions.AllowAny]
 
-    #@method_decorator(csrf_protect)
+    # @method_decorator(csrf_protect)
     def post(self, request):
         auth = JWTAuthentication()
         user = auth.check_refresh_token(request)
@@ -39,10 +39,9 @@ class RefreshView(APIView):
         cr.user = user
         cr.obtain_new_access_token()
         cr.set_data({
-            'detail': 'new access token obtained'
+            'detail': 'access token obtained'
         })
         return cr.response
-
 
 
 class SignUp(APIView):

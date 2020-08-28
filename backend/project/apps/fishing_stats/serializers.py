@@ -29,7 +29,7 @@ class StatsSerializer(serializers.ModelSerializer):
 class EventSerializer(serializers.ModelSerializer):
     class Meta:
         model = FishingEvent
-        fields = ['id', 'date', 'location']
+        fields = ['id', 'date', 'location', 'persons']
 
 
 class FullEventSerializer(serializers.ModelSerializer):

@@ -33,11 +33,12 @@ class EventDetails(mixins.RetrieveModelMixin,
 
     serializer_class = FullEventSerializer
 
-    def get(self, request):
+    def get(self, request, **kwargs):
         """
         returns specific fishing event and related catches for current user
         """
-        event_id = request.query_params['id']
+        # BASEURL/events/details/<event_id> url param is accessed from kwargs
+        event_id = kwargs['event_id']
         fe = FishingEvent()
         queryset = fe.get_event_as_queryset(event_id)
         print(type(queryset))

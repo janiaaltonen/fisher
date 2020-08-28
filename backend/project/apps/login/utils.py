@@ -48,16 +48,16 @@ class CookieResponse:
         access_token = generate_access_token(self.user)
         refresh_token_age = datetime.timedelta.total_seconds(datetime.timedelta(days=1))
         refresh_token = generate_refresh_token(self.user)
-        self.response.set_cookie(key='refresh_token', value=refresh_token, httponly=True, max_age=refresh_token_age)
-        self.response.set_cookie(key='access_token', value=access_token, httponly=True, max_age=access_token_age)
+        self.response.set_cookie(key='refresh_token', value=refresh_token, httponly=True,
+                                 max_age=refresh_token_age)
+        self.response.set_cookie(key='access_token', value=access_token, httponly=True,
+                                 max_age=access_token_age)
 
     def obtain_new_access_token(self):
         access_token_age = datetime.timedelta.total_seconds(datetime.timedelta(hours=0, minutes=5))
         access_token = generate_access_token(self.user)
-        self.response.set_cookie(key='access_token', value=access_token, httponly=True, max_age=access_token_age)
+        self.response.set_cookie(key='access_token', value=access_token, httponly=True,
+                                 max_age=access_token_age)
 
     def set_data(self, data):
         self.response.data = data
-
-
-

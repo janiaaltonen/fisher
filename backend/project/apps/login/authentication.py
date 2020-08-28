@@ -46,7 +46,7 @@ class JWTAuthentication(BaseAuthentication):
         # populates request.META['CSRF_COOKIE'], which is used in process_view()
         check.process_request(request)
         reason = check.process_view(request, None, (), {})
-        # print(reason)
+        print(reason)
         if reason:
             raise exceptions.PermissionDenied('CSRF Failed: %s' % reason)
 
