@@ -1,3 +1,11 @@
-<li *ngFor="let event of fishingEvents">
-  <h4> {{event.date}}  {{event.location}} </h4>
-</li>
+<div class="card m-5" *ngFor="let event of fishingEvents">
+  <div class="card-header">
+      {{event.date}} {{event.location}}
+  </div>
+  <div class="card-body">
+    <p class="card-text"> Persons {{event.persons}}</p>
+    <a routerLink="details/{{event.id}}" class="btn btn-primary"> Show more </a>
+  </div>
+</div>
+
+

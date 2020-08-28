@@ -1,0 +1,12 @@
+<div class="card m-5">
+  <div class="card-header">
+    {{fishingEvent.date}} {{fishingEvent.location}}
+  </div>
+  <div class="card-body">
+    <p class="card-text"> Henkilöt {{fishingEvent.persons}} </p>
+    <div *ngFor="let stat of fishingEvent.stats">
+      <h5> PPP</h5>
+    </div>
+    <a routerLink="details/" class="btn btn-primary"> Show more </a>
+  </div>
+</div>

@@ -34,6 +34,11 @@ export class AuthenticationService {
         return resp.body;
       }));
   }
+  logout() {
+    localStorage.removeItem('user');
+    this.userSubject.next(null);
+    this.router.navigate(['/login']);
+  }
   obtainAccessToken(): Observable<any> {
     const body = null;
     return this.http.post(this.baseUrl + '/refresh', body);

@@ -11,7 +11,8 @@ export class ListComponent implements OnInit {
     {
       id: -1,
       date: '',
-      location: ''
+      location: '',
+      persons: ''
     }];
 
   constructor(private stats: FishingStatsService) { }
