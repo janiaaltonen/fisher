@@ -1,19 +1,19 @@
 export class FishingEvent {
-  id: bigint;
-  date: string;
-  location: string;
-  persons: bigint;
+  id: -1;
+  date: '';
+  location: '';
+  persons: 0;
   stats: [
     {
-      id: bigint;
-      fishing_method: string;
+      id: -1;
+      fishing_method: '';
       catches: [
         {
-          id: bigint;
-          fish_species: string;
-          fish_details: string;
-          lure: string;
-          lure_details: string;
+          id: -1;
+          fish_species: '';
+          fish_details: '';
+          lure: '';
+          lure_details: '';
         }
       ]
     }

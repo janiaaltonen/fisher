@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {FishingStatsService} from '@app/_services';
 import { FishingEvent } from '@app/_models/fishing-event.model';
 
@@ -10,15 +10,16 @@ import { FishingEvent } from '@app/_models/fishing-event.model';
 })
 export class DetailsComponent implements OnInit {
   id: string;
-  fishingEvent: FishingEvent;
+  fishingEvent = new FishingEvent();
 
-  constructor(private route: ActivatedRoute, private statService: FishingStatsService) { }
+  constructor(private route: ActivatedRoute, private statService: FishingStatsService, private router: Router) {
+  }
 
   ngOnInit(): void {
     this.id = this.route.snapshot.params.id;
-    this.statService.getById(this.id).subscribe(data => {
-      this.fishingEvent = data;
-    });
+    this.statService.getEventById(this.id).subscribe(data => this.fishingEvent = data);
   }
-
+  EditFishingEvent(): void {
+    this.router.navigate(['edit/'], { relativeTo: this.route, state: {data: this.fishingEvent}});
+  }
 }

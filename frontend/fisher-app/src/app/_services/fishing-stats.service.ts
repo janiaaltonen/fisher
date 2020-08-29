@@ -14,7 +14,7 @@ export class FishingStatsService {
   getAll(): Observable<any> {
     return this.http.get(this.baseUrl + '/events');
   }
-  getById(id): Observable<any>{
+  getEventById(id): Observable<any>{
     return this.http.get(this.baseUrl + '/events/details/' + id + '/');
   }
 }
