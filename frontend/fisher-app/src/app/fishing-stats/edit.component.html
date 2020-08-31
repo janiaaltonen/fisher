@@ -19,7 +19,7 @@
         </ul>
       </div>
       <div class="card-body">
-        <table class="table">
+        <table class="table" [formGroup]="form">
           <thead>
           <tr>
             <th> Kalalaji </th>
@@ -28,16 +28,12 @@
             <th> Uistimen lisätiedot </th>
           </tr>
           </thead>
-          <tbody *ngFor="let fCatch of stat.catches">
-          <tr>
-            <td>
-              <label>
-                <input [defaultValue]="fCatch.fish_species">
-              </label>
-            </td>
-            <td> {{ fCatch.fish_details }} </td>
-            <td> {{ fCatch.lure }} </td>
-            <td> {{ fCatch.lure_details }} </td>
+          <tbody>
+          <tr formArrayName="catches" *ngFor="let c of f.catches.value; let i = index">
+            <td> {{ c.fish_species }} </td>
+            <td> {{ c.fish_details }} </td>
+            <td> {{ c.lure }} </td>
+            <td> {{ c.lure_details }} </td>
           </tr>
           </tbody>
         </table>

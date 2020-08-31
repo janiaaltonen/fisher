@@ -20,6 +20,7 @@ export class EditComponent implements OnInit {
       fishing_method: [this.fishingEvent.stats[0].fishing_method, Validators.required],
       catches: this.addCatchesFormArray()
     });
+    console.log(this.f.catches.value);
   }
   addCatchesFormArray(): FormArray {
     const arr = this.formBuilder.array([]);
@@ -35,4 +36,5 @@ export class EditComponent implements OnInit {
     }
     return arr;
   }
+  get f() { return this.form.controls; }
 }

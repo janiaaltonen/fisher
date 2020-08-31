@@ -6,11 +6,12 @@ import { DetailsComponent } from './details.component';
 import { LayoutComponent } from './layout.component';
 import { EditComponent } from './edit.component';
 import {ReactiveFormsModule} from '@angular/forms';
+import { AddComponent } from './add.component';
 
 
 
 @NgModule({
-  declarations: [ListComponent, DetailsComponent, LayoutComponent, EditComponent],
+  declarations: [ListComponent, DetailsComponent, LayoutComponent, EditComponent, AddComponent],
   imports: [
     CommonModule,
     FishingStatsRoutingModule,
