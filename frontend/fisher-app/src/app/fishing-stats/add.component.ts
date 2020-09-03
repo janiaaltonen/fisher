@@ -12,6 +12,7 @@ export class AddComponent implements OnInit {
   fish_species = ['Ahven', 'Kuha', 'Lahna'];
   lures = ['Jigi', 'Vaappu', 'Lusikka', 'Lippa'];
   isAdding = false;
+
   constructor(private formBuilder: FormBuilder) { }
 
   ngOnInit(): void {
@@ -20,24 +21,48 @@ export class AddComponent implements OnInit {
       location: ['', Validators.required],
       persons: ['', Validators.required],
       stats: this.formBuilder.array([
-        this.formBuilder.group({
-          fishing_method: ['', Validators.required],
-          catches: this.formBuilder.array([
-            this.formBuilder.group({
-              fish_species: ['', Validators.required],
-              fish_details: [''],
-              lure: [''],
-              lure_details: ['']
-            })
-          ])
-        })
+        this.initStats()
       ])
     });
   }
 
-  get f() {return this.form.controls; }
-  show(){
-    console.log(this.f.stats.value);
+  initStats(): FormGroup {
+    return this.formBuilder.group({
+        fishing_method: ['', Validators.required],
+        catches: this.formBuilder.array([
+          this.initCatches()
+        ])
+    });
   }
-  // e.g. for accessing the value inside catches array this.f.stats.value[0].catches[0].lure
+
+  initCatches(): FormGroup {
+    return this.formBuilder.group({
+        fish_species: ['', Validators.required],
+        fish_details: [''],
+        lure: [''],
+        lure_details: ['']
+    });
+  }
+
+  addStat() {
+    const control = this.stats;
+    control.push(this.initStats());
+  }
+
+  addCatch(statIndex) {
+    const control = (this.stats).at(statIndex).get('catches') as FormArray;
+    control.push(this.initCatches());
+  }
+
+  get f() { return this.form.controls; }
+  get stats() { return this.form.get('stats') as FormArray; }
+  getCatches(stats) { return stats.get('catches') as FormArray; }
+
+  testCheck() {
+    // console.log(this.f.stats.value);
+    const a = (this.form.get('stats') as FormArray).at(0);
+    const control = (this.form.controls.stats as FormArray).at(0).get('catches') as FormArray;
+    console.log(a);
+  }
+
 }

@@ -1,7 +1,5 @@
-<div class="card m-5">
-  <div class="card-header">
-    Add new fishing event
-  </div>
+<div class="card m-4">
+  <h4 class="card-header">Add new fishing event</h4>
   <div class="card-body">
     <form [formGroup]="form">
       <div class="form-group">
@@ -16,49 +14,39 @@
         <label for="persons"> Persons</label>
         <input class="form-control" type="number" min="1" formControlName="persons">
       </div>
-      <div class="form-group">
-        <button class="btn btn-primary" *ngIf="!isAdding" (click)="isAdding=true;"> Add fishing method</button>
-      </div>
-
-      <div class="card m-2"  *ngIf="isAdding">
-        <div class="card-header">
-          <div formArrayName="stats" *ngFor="let c of f.stats.value; let i = index">
-            <div [formGroupName]="i">
-              <div class="form-group" *ngIf="isAdding">
-                <label [attr.for]="'fishing_method' + i"> Fishing method</label>
-                <select  class="form-control" formControlName="fishing_method" [id]="'fishing_method' + i">
-                  <option *ngFor="let m of methods" [value]="m"> {{ m }} </option>
-                </select>
+      <div formArrayName="stats">
+        <div class="card m-2" *ngFor="let stat of stats.controls; let i = index">
+          <div formGroupName="{{ i }}">
+            <div class="card-header">
+              <label [attr.for]="'fishing_method' + i"> Fishing method</label>
+              <select  class="form-control" formControlName="fishing_method" [id]="'fishing_method' + i">
+                <option *ngFor="let m of methods" [value]="m"> {{ m }} </option>
+              </select>
+            </div>
+            <div formArrayName="catches">
+              <div class="card-body">
+                <div *ngFor="let control of getCatches(stat).controls; let j = index">
+                  <div formGroupName="{{ j }}" class="form-row">
+                    <div class="form-group col">
+                      <label [attr.for]="'fish_species' + j"> Fish species</label>
+                      <input class="form-control" type="text" formControlName="fish_species" [id]="'fish_species' + j"/>
+                    </div>
+                    <div class="form-group col">
+                      <label [attr.for]="'fish_details' + j"> Weight</label>
+                      <input class="form-control" type="text" formControlName="fish_details" [id]="'fish_species' + j"/>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-row">
+                  <button class="btn btn-primary" (click)="addCatch(i)"> Add Catch </button>
+                </div>
               </div>
             </div>
           </div>
         </div>
-        <div class="card-body">
-          <div class="form-row">
-            <div class="form-group col">
-              <label for="fishing_method"> Fish species</label>
-              <select class="form-control">
-                <option *ngFor="let f of fish_species" [value]="f"> {{ f }} </option>
-              </select>
-            </div>
-            <div class="form-group col" *ngIf="isAdding">
-              <label for="fishing_method"> Fish weight</label>
-              <input class="form-control" type="number">
-            </div>
-            <div class="form-group col" *ngIf="isAdding">
-              <label for="lure"> Lure</label>
-              <select  class="form-control">
-                <option *ngFor="let l of lures"> {{ l }} </option>
-              </select>
-            </div>
-            <div class="form-group col" *ngIf="isAdding">
-              <label for="lure_details"> Lure details</label>
-              <input class="form-control" type="text">
-            </div>
-          </div>
-        </div>
       </div>
+      <button (click)="addStat()"> Add Fishing Method </button>
+      <button (click)="testCheck()"> check </button>
     </form>
-    <button (click)="show()"> Show</button>
   </div>
 </div>
