@@ -2,51 +2,83 @@
   <h4 class="card-header">Add new fishing event</h4>
   <div class="card-body">
     <form [formGroup]="form">
-      <div class="form-group">
-        <label for="location"> Location</label>
-        <input class="form-control" type="text" formControlName="location">
+      <div class="form-group required">
+        <label class="control-label" for="location"> Location</label>
+        <input class="form-control" type="text" formControlName="location" [ngClass]="{ 'is-invalid': submitted && f.location.errors }">
+        <div *ngIf="submitted && f.location.errors" class="invalid-feedback">
+          <div *ngIf="f.location.errors.required">Location is required</div>
+        </div>
       </div>
-      <div class="form-group">
-        <label for="date"> Date</label>
-        <input class="form-control" type="date" formControlName="date">
+      <div class="form-group required">
+        <label class="control-label" for="date"> Date</label>
+        <input class="form-control" type="date" formControlName="date" [ngClass]="{ 'is-invalid': submitted && f.date.errors }">
+        <div *ngIf="submitted && f.date.errors" class="invalid-feedback">
+          <div *ngIf="f.date.errors.required">Date is required</div>
+        </div>
       </div>
-      <div class="form-group">
-        <label for="persons"> Persons</label>
-        <input class="form-control" type="number" min="1" formControlName="persons">
+      <div class="form-group required">
+        <label class="control-label" for="persons"> Persons</label>
+        <input class="form-control" type="number" min="1" formControlName="persons" [ngClass]="{ 'is-invalid': submitted && f.persons.errors }">
+        <div *ngIf="submitted && f.persons.errors" class="invalid-feedback">
+          <div *ngIf="f.persons.errors.required">Persons is required</div>
+          <div *ngIf="f.persons.errors."
+        </div>
       </div>
       <div formArrayName="stats">
         <div class="card m-2" *ngFor="let stat of stats.controls; let i = index">
           <div formGroupName="{{ i }}">
-            <div class="card-header">
-              <label [attr.for]="'fishing_method' + i"> Fishing method</label>
-              <select  class="form-control" formControlName="fishing_method" [id]="'fishing_method' + i">
-                <option *ngFor="let m of methods" [value]="m"> {{ m }} </option>
+            <div class="card-header form-group required">
+              <label class="control-label" [attr.for]="'fishing_method' + i"> Fishing method</label>
+              <select  class="custom-select" formControlName="fishing_method" [id]="'fishing_method' + i" [ngClass]="{ 'is-invalid': submitted && stat.get('fishing_method').errors }">
+                <option *ngFor="let m of methods; let k=index" [value]="methods[k].key"> {{ methods[k].value }} </option>
               </select>
+              <div *ngIf="submitted && stat.get('fishing_method').errors" class="invalid-feedback">
+                <div *ngIf="stat.get('fishing_method').errors.required">Fishing method is required</div>
+              </div>
             </div>
             <div formArrayName="catches">
               <div class="card-body">
                 <div *ngFor="let control of getCatches(stat).controls; let j = index">
                   <div formGroupName="{{ j }}" class="form-row">
                     <div class="form-group col">
-                      <label [attr.for]="'fish_species' + j"> Fish species</label>
-                      <input class="form-control" type="text" formControlName="fish_species" [id]="'fish_species' + j"/>
+                      <label class="control-label" [attr.for]="'fish_species' + j"> Fish species</label>
+                      <select class="custom-select" formControlName="fish_species" [id]="'fish_species' + j">
+                        <option *ngFor="let species of fishSpecies; let k=index" [value]="fishSpecies[k].key"> {{ fishSpecies[k].value }} </option>
+                      </select>
                     </div>
                     <div class="form-group col">
                       <label [attr.for]="'fish_details' + j"> Weight</label>
-                      <input class="form-control" type="text" formControlName="fish_details" [id]="'fish_species' + j"/>
+                      <input class="form-control" type="text" formControlName="fish_details" [id]="'fish_details' + j"/>
+                    </div>
+                    <div class="form-group col">
+                      <label class="control-label" [attr.for]="'lure' + j"> Lure</label>
+                      <select class="custom-select" formControlName="lure" [id]="'lure' + j">
+                        <option *ngFor="let lure of lures; let k=index" [value]="lures[k].key"> {{ lures[k].value }} </option>
+                      </select>
+                    </div>
+                    <div class="form-group col">
+                      <label [attr.for]="'lure_details' + j"> Lure details</label>
+                      <input class="form-control" type="text" formControlName="lure_details" [id]="'lure_details' + j"/>
+                    </div>
+                    <div class="form-group col">
+                      <button type="button" class="close form-control" aria-label="Close" (click)="removeCatch(i, j)">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
                     </div>
                   </div>
                 </div>
                 <div class="form-row">
-                  <button class="btn btn-primary" (click)="addCatch(i)"> Add Catch </button>
+                  <button class="btn btn-outline-primary" (click)="addCatch(i)"> Add Catch </button>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <button (click)="addStat()"> Add Fishing Method </button>
-      <button (click)="testCheck()"> check </button>
+      <button class="btn btn-outline-primary" (click)="addStat()"> Add Fishing Method </button>
     </form>
+  </div>
+  <div class="card-footer text-center">
+    <button class="btn btn-primary" (click)="createEvent()"> Save </button>
   </div>
 </div>

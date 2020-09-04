@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {FishingStatsService} from '@app/_services';
+import {map} from 'rxjs/operators';
 
 @Component({
   selector: 'app-add',
@@ -8,14 +10,28 @@ import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
 })
 export class AddComponent implements OnInit {
   form: FormGroup;
-  methods = [null, 'Casting', 'Fly fishing', 'Trolling', 'Net fishing', 'Pole fishing'];
-  fish_species = ['Ahven', 'Kuha', 'Lahna'];
-  lures = ['Jigi', 'Vaappu', 'Lusikka', 'Lippa'];
+  emptyArr = [
+    {
+      key: '',
+      value: ''
+    }
+  ];
+  methods = this.emptyArr;
+  fishSpecies = this.emptyArr;
+  lures = this.emptyArr;
   isAdding = false;
+  submitted = false;
 
-  constructor(private formBuilder: FormBuilder) { }
+  constructor(private formBuilder: FormBuilder, private api: FishingStatsService) { }
 
   ngOnInit(): void {
+    this.api.getFormOptions().subscribe(
+        data => {
+          this.methods = data.fishing_methods;
+          this.fishSpecies = data.catches;
+          this.lures = data.lures;
+    }
+    );
     this.form = this.formBuilder.group({
       date: ['', Validators.required],
       location: ['', Validators.required],
@@ -50,19 +66,61 @@ export class AddComponent implements OnInit {
   }
 
   addCatch(statIndex) {
+    // get clicked catches parent formArray and push new catches formArray to that
     const control = (this.stats).at(statIndex).get('catches') as FormArray;
     control.push(this.initCatches());
   }
+  removeCatch(statIndex, catchIndex) {
+    ((this.stats).at(statIndex).get('catches') as FormArray).removeAt(catchIndex);
+  }
 
   get f() { return this.form.controls; }
-  get stats() { return this.form.get('stats') as FormArray; }
-  getCatches(stats) { return stats.get('catches') as FormArray; }
 
-  testCheck() {
-    // console.log(this.f.stats.value);
-    const a = (this.form.get('stats') as FormArray).at(0);
-    const control = (this.form.controls.stats as FormArray).at(0).get('catches') as FormArray;
-    console.log(a);
+  get stats(): FormArray { return this.form.get('stats') as FormArray; }
+
+  getCatches(stats): FormArray { return stats.get('catches') as FormArray; }
+
+  createFishingEvent() {
+    // creates specified json from form values
+    const statsArr = [];
+    let catchesArr = [];
+    for (const statControl of this.stats.controls) {
+      for (const catchControl of this.getCatches(statControl).controls) {
+        const catchObj = {
+          fish_species: catchControl.get('fish_species').value,
+          fish_details: catchControl.get('fish_details').value,
+          lure: catchControl.get('lure').value,
+          lure_details: catchControl.get('lure_details').value
+        };
+        catchesArr.push(catchObj);
+      }
+      const statObj = {
+        fishing_method: statControl.get('fishing_method').value,
+        catches: catchesArr
+      };
+      statsArr.push(statObj);
+      catchesArr = [];
+    }
+    return {
+      date: this.f.date.value,
+      location: this.f.location.value,
+      persons: this.f.persons.value,
+      stats: statsArr
+    };
+  }
+
+  createEvent() {
+   console.log('aa');
+   this.submitted = true;
+   console.log(this.f);
+   if (this.form.invalid) {
+     return;
+   }
+   this.api.createEvent(this.createFishingEvent()).subscribe(
+     data => {
+       console.log('success');
+     }
+   );
   }
 
 }

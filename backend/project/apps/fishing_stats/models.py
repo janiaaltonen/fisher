@@ -81,7 +81,6 @@ class FishCatch(models.Model):
         (WHITE_FISH, 'Siika'),
         (ZANDER, 'Kuha'),
         (DEFAULT, 'Muu'),
-        (NONE, 'Ei saalista'),
     ]
     JIG = 'Jig'
     SPINNER = 'Spinner'

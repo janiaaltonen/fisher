@@ -22,13 +22,13 @@ export class AuthenticationService {
   }
 
   login(user, pass): Observable<any> {
-    this.httpHeaders.set('Content-type', 'application/x-www-form-urlencoded');
     const body = {
       username: user,
       password: pass
     };
     return this.http.post(this.baseUrl + '/auth', body, {headers: this.httpHeaders, observe: 'response'})
       .pipe(map(resp => {
+        console.log(resp.headers.keys());
         localStorage.setItem('user', JSON.stringify(resp.body));
         this.userSubject.next(resp.body);
         return resp.body;
