@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FishingStatsService} from '@app/_services';
+import {ActivatedRoute, Router} from '@angular/router';
 
 @Component({
   selector: 'app-list',
@@ -15,7 +16,7 @@ export class ListComponent implements OnInit {
       persons: ''
     }];
 
-  constructor(private stats: FishingStatsService) { }
+  constructor(private stats: FishingStatsService, private router: Router, private route: ActivatedRoute) { }
 
   ngOnInit(): void {
     this.stats.getAll().subscribe(
@@ -26,6 +27,10 @@ export class ListComponent implements OnInit {
         console.log(error);
       }
     );
+  }
+
+  addNewEvent(): void {
+    this.router.navigate(['add/'], {relativeTo: this.route});
   }
 
 }

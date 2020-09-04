@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {FishingStatsService} from '@app/_services';
 import {map} from 'rxjs/operators';
+import {ActivatedRoute, Router} from '@angular/router';
 
 @Component({
   selector: 'app-add',
@@ -19,10 +20,13 @@ export class AddComponent implements OnInit {
   methods = this.emptyArr;
   fishSpecies = this.emptyArr;
   lures = this.emptyArr;
-  isAdding = false;
+  isCatches = false;
   submitted = false;
 
-  constructor(private formBuilder: FormBuilder, private api: FishingStatsService) { }
+  constructor(private formBuilder: FormBuilder,
+              private api: FishingStatsService,
+              private route: ActivatedRoute,
+              private router: Router) { }
 
   ngOnInit(): void {
     this.api.getFormOptions().subscribe(
@@ -109,6 +113,15 @@ export class AddComponent implements OnInit {
     };
   }
 
+  disableAddCatch() {
+    if (!this.isCatches) {
+      document.getElementById('addCatchBtn').setAttribute('disabled', 'disabled');
+    } else {
+      document.getElementById('addCatchBtn').removeAttribute('disabled');
+    }
+    this.isCatches = !this.isCatches;
+  }
+
   createEvent() {
    console.log('aa');
    this.submitted = true;
@@ -118,7 +131,7 @@ export class AddComponent implements OnInit {
    }
    this.api.createEvent(this.createFishingEvent()).subscribe(
      data => {
-       console.log('success');
+       this.router.navigate(['stats/']);
      }
    );
   }
