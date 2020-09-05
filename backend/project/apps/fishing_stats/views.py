@@ -42,10 +42,10 @@ class CreateEvent(mixins.CreateModelMixin, generics.GenericAPIView):
 
 
 class EventDetails(mixins.RetrieveModelMixin,
-                   mixins.CreateModelMixin,
                    mixins.UpdateModelMixin,
                    mixins.DestroyModelMixin,
                    generics.GenericAPIView):
+
     serializer_class = FullEventSerializer
 
     def get(self, request, **kwargs):
@@ -56,7 +56,6 @@ class EventDetails(mixins.RetrieveModelMixin,
         event_id = kwargs['event_id']
         fe = FishingEvent()
         queryset = fe.get_event_as_queryset(event_id)
-        print(type(queryset))
         serializer = self.serializer_class(data=queryset, many=True)
         serializer.is_valid()
         return Response(serializer.data[0])  # return only the object not the array containing object
@@ -84,27 +83,15 @@ class EventDetails(mixins.RetrieveModelMixin,
         serializer.save()
         return Response(serializer.data)
 
-    def delete(self, request):
+    def delete(self, request, **kwargs):
         """
-         Deletes whole event, fishing technique in it or fish catch in it
-         depending on the url params given
+         Deletes whole event and relates fishing techniques and catches
         """
-        event_id = self.request.query_params['id']
-        tech_id = self.request.query_params['tech']
-        catch_id = self.request.query_params['catch']
-
-        if tech_id == '0' and catch_id == '0':
-            fe = FishingEvent()
-            successful = fe.delete_event(event_id)
-            return self.delete_response(successful)
-        elif tech_id != '0':
-            ft = FishingTechnique()
-            successful = ft.delete_technique(tech_id)
-            return self.delete_response(successful)
-        else:
-            fc = FishCatch()
-            successful = fc.delete_catch(catch_id)
-            return self.delete_response(successful)
+        event_id = kwargs['event_id']
+        user_id = self.request.user.id
+        fe = FishingEvent()
+        successful = fe.delete_event(user_id, event_id)
+        return self.delete_response(successful)
 
     def delete_response(self, successful):
         if successful:

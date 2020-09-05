@@ -21,7 +21,6 @@
         <input class="form-control" type="number" min="1" formControlName="persons" [ngClass]="{ 'is-invalid': submitted && f.persons.errors }">
         <div *ngIf="submitted && f.persons.errors" class="invalid-feedback">
           <div *ngIf="f.persons.errors.required">Persons is required</div>
-          <div *ngIf="f.persons.errors."
         </div>
       </div>
       <div formArrayName="stats">

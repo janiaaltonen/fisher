@@ -28,7 +28,6 @@ export class AuthenticationService {
     };
     return this.http.post(this.baseUrl + '/auth', body, {headers: this.httpHeaders, observe: 'response'})
       .pipe(map(resp => {
-        console.log(resp.headers.keys());
         localStorage.setItem('user', JSON.stringify(resp.body));
         this.userSubject.next(resp.body);
         return resp.body;

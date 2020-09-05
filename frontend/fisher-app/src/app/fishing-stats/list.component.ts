@@ -19,6 +19,10 @@ export class ListComponent implements OnInit {
   constructor(private stats: FishingStatsService, private router: Router, private route: ActivatedRoute) { }
 
   ngOnInit(): void {
+    this.getEvents();
+  }
+
+  getEvents(): void {
     this.stats.getAll().subscribe(
       data => {
         this.fishingEvents = data;
@@ -31,6 +35,16 @@ export class ListComponent implements OnInit {
 
   addNewEvent(): void {
     this.router.navigate(['add/'], {relativeTo: this.route});
+  }
+
+  deleteEvent(eventId) {
+    this.stats.deleteFishingEvent(eventId).subscribe(
+      resp => {
+        if (resp.status === 204) {
+          // refresh page, load list again to be decided
+        }
+      }
+    );
   }
 
 }

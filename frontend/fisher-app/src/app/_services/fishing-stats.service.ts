@@ -28,4 +28,8 @@ export class FishingStatsService {
   getFormOptions(): Observable<any> {
     return this.http.get(this.baseUrl + '/formOptions/');
   }
+
+  deleteFishingEvent(id): Observable<any> {
+    return this.http.delete(this.baseUrl + `/events/details/${id}/`, {headers: this.httpHeaders2, observe: 'response'});
+  }
 }

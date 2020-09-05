@@ -25,9 +25,9 @@ class FishingEvent(models.Model):
         instance = FishingEvent.objects.get(pk=pk)  # return specific event by user_id AND event's id
         return instance
 
-    def delete_event(self, pk):
+    def delete_event(self, user_id, pk):
         try:
-            instance = FishingEvent.objects.get(pk=pk)
+            instance = FishingEvent.objects.filter(user_id=user_id).get(pk=pk)
             instance.delete()
             return True
         except self.DoesNotExist:
