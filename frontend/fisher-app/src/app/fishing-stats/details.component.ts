@@ -19,7 +19,21 @@ export class DetailsComponent implements OnInit {
     this.id = this.route.snapshot.params.id;
     this.statService.getEventById(this.id).subscribe(data => this.fishingEvent = data);
   }
+
   EditFishingEvent(): void {
     this.router.navigate(['edit/'], { relativeTo: this.route, state: {data: this.fishingEvent}});
+  }
+
+  deleteEvent(id): void {
+    this.statService.deleteFishingEvent(id).subscribe(
+      resp => {
+        if (resp.status === 204) {
+          this.router.navigate(['events/']);
+        }
+      },
+      error => {
+        console.log(error);
+      }
+    );
   }
 }

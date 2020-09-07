@@ -9,7 +9,7 @@ const fishingStatsModule = () => import('./fishing-stats/fishing-stats.module').
 const routes: Routes = [
   { path: '', component: AppComponent, canActivate: [AuthGuard] },
   { path: 'login', component: LoginComponent},
-  { path: 'stats', loadChildren: fishingStatsModule, canActivate: [AuthGuard] }
+  { path: 'events', loadChildren: fishingStatsModule, canActivate: [AuthGuard] }
 ];
 
 @NgModule({

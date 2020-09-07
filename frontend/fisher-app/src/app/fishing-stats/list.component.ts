@@ -41,9 +41,13 @@ export class ListComponent implements OnInit {
     this.stats.deleteFishingEvent(eventId).subscribe(
       resp => {
         if (resp.status === 204) {
-          // refresh page, load list again to be decided
+          // now calls backend tho refresh list. Is it better than use local array to refresh page?!?
+          this.getEvents();
         }
-      }
+      },
+        error => {
+          console.log(error);
+        }
     );
   }
 

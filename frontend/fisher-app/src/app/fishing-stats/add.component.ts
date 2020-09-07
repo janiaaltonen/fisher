@@ -49,9 +49,7 @@ export class AddComponent implements OnInit {
   initStats(): FormGroup {
     return this.formBuilder.group({
         fishing_method: ['', Validators.required],
-        catches: this.formBuilder.array([
-          this.initCatches()
-        ])
+        catches: this.formBuilder.array([])
     });
   }
 
@@ -73,9 +71,21 @@ export class AddComponent implements OnInit {
     // get clicked catches parent formArray and push new catches formArray to that
     const control = (this.stats).at(statIndex).get('catches') as FormArray;
     control.push(this.initCatches());
+    // disable no catches checkbox
+    const noCatchCheckBox = 'noCatches' + statIndex;
+    if (control.length > 0) {
+      document.getElementById(noCatchCheckBox).setAttribute('disabled', 'disabled');
+    }
   }
+
   removeCatch(statIndex, catchIndex) {
     ((this.stats).at(statIndex).get('catches') as FormArray).removeAt(catchIndex);
+    const control = (this.stats).at(statIndex).get('catches') as FormArray;
+    // enable no catches checkbox if there isn't catches in array
+    const noCatchCheckBox = 'noCatches' + statIndex;
+    if (control.length === 0) {
+      document.getElementById(noCatchCheckBox).removeAttribute('disabled');
+    }
   }
 
   get f() { return this.form.controls; }
@@ -131,7 +141,7 @@ export class AddComponent implements OnInit {
    }
    this.api.createEvent(this.createFishingEvent()).subscribe(
      data => {
-       this.router.navigate(['stats/']);
+       this.router.navigate(['events/']);
      }
    );
   }
