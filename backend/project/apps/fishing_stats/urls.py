@@ -4,7 +4,7 @@ from .views import AllEvents, CreateEvent, EventDetails, ChoicesOptions, Locatio
 urlpatterns = [
     path('events/', AllEvents.as_view()),
     path('events/create', CreateEvent.as_view()),
-    re_path(r'^events/details/(?P<event_id>[0-9])/$', EventDetails.as_view()),
+    re_path(r'^events/details/(?P<event_id>\d+)/$', EventDetails.as_view()),
     path('locations/', Locations.as_view()),
     path('formOptions/', ChoicesOptions.as_view())
 ]
