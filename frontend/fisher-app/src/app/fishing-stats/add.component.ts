@@ -78,6 +78,10 @@ export class AddComponent implements OnInit {
     }
   }
 
+  removeStat(statIndex): void {
+    this.stats.removeAt(statIndex);
+  }
+
   removeCatch(statIndex, catchIndex) {
     ((this.stats).at(statIndex).get('catches') as FormArray).removeAt(catchIndex);
     const control = (this.stats).at(statIndex).get('catches') as FormArray;

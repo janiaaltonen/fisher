@@ -1,4 +1,4 @@
-<div class="card m-4">
+<div class="card m-5">
   <h4 class="card-header">Add new fishing event</h4>
   <div class="card-body">
     <form [formGroup]="form">
@@ -26,13 +26,27 @@
       <div formArrayName="stats">
         <div class="card m-2" *ngFor="let stat of stats.controls; let i = index">
           <div formGroupName="{{ i }}">
-            <div class="card-header form-group col required">
+            <div class="card-header form-row">
+              <div class="d-inline-block form-group col">
               <label class="control-label" [attr.for]="'fishing_method' + i"> Fishing method</label>
               <select  class="custom-select" formControlName="fishing_method" [id]="'fishing_method' + i" [ngClass]="{ 'is-invalid': submitted && stat.get('fishing_method').errors }">
                 <option *ngFor="let m of methods; let k=index" [value]="methods[k].key"> {{ methods[k].value }} </option>
               </select>
               <div *ngIf="submitted && stat.get('fishing_method').errors" class="invalid-feedback">
                 <div *ngIf="stat.get('fishing_method').errors.required">Fishing method is required</div>
+              </div>
+              </div>
+              <div class="d-inline-block float-right" *ngIf="stats.length > 1"> <!-- Event must have at least one fishing method -->
+                <div class="form-group col">
+                  <div class="text-danger">
+                    <a style="cursor: pointer" (click)="removeStat(i)">
+                      <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-trash" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                        <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                      </svg>
+                    </a>
+                  </div>
+                </div>
               </div>
             </div>
             <div formArrayName="catches">
