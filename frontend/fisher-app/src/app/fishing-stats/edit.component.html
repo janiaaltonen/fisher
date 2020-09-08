@@ -2,42 +2,98 @@
   <div class="card-header">
     {{this.fishingEvent.date}} {{this.fishingEvent.location}}
   </div>
-  <div class="card-body">
-    <p class="card-text"> Henkilöt {{this.fishingEvent.persons}} </p>
-    <div class="card" *ngFor="let stat of fishingEvent.stats">
-      <div class="card-header">
-        <ul class="nav nav-tabs card-header-tabs">
-          <li class="nav-item">
-            <a class="nav-link active text-dark font-weight-bold"> {{ stat.fishing_method }} </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link text-info" style="cursor: pointer"> Tallenna </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link text-danger"> Poista </a>
-          </li>
-        </ul>
+  <form [formGroup]="form">
+    <div class="card-body">
+      <div class="form-group row">
+        <label for="location" class="col-sm-2 col-form-label">Location</label>
+        <div class="col-sm-4">
+          <input type="text" class="form-control" id="location" formControlName="location" [value]="f.location.value">
+        </div>
       </div>
-      <div class="card-body">
-        <table class="table" [formGroup]="form">
-          <thead>
-          <tr>
-            <th> Kalalaji </th>
-            <th> Paino </th>
-            <th> Uistin </th>
-            <th> Uistimen lisätiedot </th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr formArrayName="catches" *ngFor="let c of f.catches.value; let i = index">
-            <td> {{ c.fish_species }} </td>
-            <td> {{ c.fish_details }} </td>
-            <td> {{ c.lure }} </td>
-            <td> {{ c.lure_details }} </td>
-          </tr>
-          </tbody>
-        </table>
+      <div class="form-group row">
+        <label for="date" class="col-sm-2 col-form-label">Date</label>
+        <div class="col-sm-4">
+          <input type="date" class="form-control" id="date"  formControlName="date" [value]="f.date.value">
+        </div>
       </div>
+      <div class="form-group row">
+        <label for="persons" class="col-sm-2 col-form-label">Persons</label>
+        <div class="col-sm-4">
+          <input type="number" class="form-control" id="persons" formControlName="persons" [value]="f.persons.value">
+        </div>
+      </div>
+
+      <div formArrayName="stats">
+        <div class="card m-1" *ngFor="let stat of stats.controls; let i = index">
+          <div formGroupName="{{ i }}">
+            <div class="card-header">
+              <div class="form-group row">
+                <label [attr.for]="'fishing_method' + i" class="col-sm-2 col-form-label">Fishing method</label>
+                <div class="col-sm-4">
+                  <select  class="custom-select" formControlName="fishing_method" [id]="'fishing_method' + i">
+                    <option *ngFor="let m of methods; let k=index" [value]="methods[k].key"> {{ methods[k].value }} </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div formArrayName="catches">
+              <div class="card-body">
+                <table class="table">
+                  <thead>
+                  <tr>
+                    <th> Kalalaji </th>
+                    <th> Paino </th>
+                    <th> Uistin </th>
+                    <th> Uistimen lisätiedot </th>
+                    <th class="text-danger">
+                      <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-trash" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                        <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                      </svg>
+                    </th>
+                  </tr>
+                  </thead>
+                  <tbody *ngFor="let control of getCatches(stat).controls; let j = index">
+                    <tr formGroupName="{{ j }}">
+                      <td>
+                        <select class="custom-select" formControlName="fish_species" [id]="'fish_species' + j" >
+                          <option *ngFor="let species of fishSpecies; let k=index" [value]="fishSpecies[k].key"> {{ fishSpecies[k].value }} </option>
+                        </select>
+                      </td>
+                      <td>
+                        <input class="form-control" type="text" formControlName="fish_details" [id]="'fish_details' + j"/>
+                      </td>
+                      <td>
+                        <select class="custom-select" formControlName="lure" [id]="'lure' + j">
+                          <option *ngFor="let lure of lures; let k=index" [value]="lures[k].key"> {{ lures[k].value }} </option>
+                        </select>
+                      </td>
+                      <td>
+                        <input class="form-control" type="text" formControlName="lure_details" [id]="'lure_details' + j"/>
+                      </td>
+                      <td>
+                        <button type="button" class="close mt-1" aria-label="Close" (click)="removeCatch(i, j)">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </td>
+                    </tr>
+                </tbody>
+                </table>
+                <div class="form-group">
+                  <button class="btn btn-outline-primary btn-sm" id="addCatchBtn" (click)="addCatch(i)"> Add Catch </button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <button type="button" class="btn btn-outline-primary btn-sm"> Add Fishing Method </button>
     </div>
+  </form>
+  <div class="card-footer text-center">
+    <button class="btn btn-primary mr-3"> Save </button>
+    <button class="btn btn-outline-danger ml-3"> Discard changes</button>
   </div>
 </div>

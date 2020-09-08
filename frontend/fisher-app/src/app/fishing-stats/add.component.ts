@@ -84,8 +84,8 @@ export class AddComponent implements OnInit {
 
   removeCatch(statIndex, catchIndex) {
     ((this.stats).at(statIndex).get('catches') as FormArray).removeAt(catchIndex);
-    const control = (this.stats).at(statIndex).get('catches') as FormArray;
     // enable no catches checkbox if there isn't catches in array
+    const control = (this.stats).at(statIndex).get('catches') as FormArray;
     const noCatchCheckBox = 'noCatches' + statIndex;
     if (control.length === 0) {
       document.getElementById(noCatchCheckBox).removeAttribute('disabled');
