@@ -4,8 +4,9 @@ from .serializers import EventSerializer, FullEventSerializer
 from rest_framework.response import Response
 from rest_framework import mixins, status
 from rest_framework import generics
-from requests import get
+from requests import get, delete
 from rest_framework import permissions
+from rest_framework.request import Request
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 
@@ -26,6 +27,8 @@ class AllEvents(APIView):
         serializer = EventSerializer(queryset, many=True)
         return Response(serializer.data)
 
+    def foo(self, request):
+        Request()
 
 class CreateEvent(mixins.CreateModelMixin, generics.GenericAPIView):
     serializer_class = FullEventSerializer
