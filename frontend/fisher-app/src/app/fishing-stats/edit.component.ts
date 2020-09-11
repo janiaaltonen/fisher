@@ -10,7 +10,6 @@ import {FishingStatsService} from '@app/_services';
 })
 export class EditComponent implements OnInit {
   fishingEvent = new FishingEvent();
-  tempFishingEvent = this.fishingEvent;
   form: FormGroup;
   emptyArr = [
     {
@@ -142,7 +141,8 @@ export class EditComponent implements OnInit {
     }
     if (this.catchesToDelete.length > 0) {
       if (this.catchesToDelete.length === 1) {
-        // make single DELETE request
+        const catchId = this.catchesToDelete[0].id;
+        // make only one DELETE request
       } else {
         // make bulk DELETE request
       }
