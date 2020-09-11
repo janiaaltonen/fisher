@@ -9,7 +9,6 @@ django-split-settings==1.0.1
 djangorestframework==3.11.0
 idna==2.10
 mysqlclient==2.0.1
-pkg-resources==0.0.0
 pycparser==2.20
 PyJWT==1.7.1
 pytz==2020.1
