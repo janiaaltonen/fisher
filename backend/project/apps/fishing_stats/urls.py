@@ -6,8 +6,7 @@ urlpatterns = [
     path('events/create', CreateEvent.as_view()),
     re_path(r'^events/details/(?P<event_id>\d+)/$', EventDetails.as_view()),
     re_path(r'^events/details/(?P<event_id>\d+)/stats/(?P<stats_id>\d+)/$', StatsDetails.as_view()),
-    re_path(r'^events/details/(?P<event_id>\d+)/stats/(?P<stats_id>\d+)/catches/(?P<catch_id>\d+)/$',
-            CatchDetails.as_view()),
+    re_path(r'^events/details/(?P<event_id>\d+)/catches/(?P<catch_id>\d+)/$', CatchDetails.as_view()),
     path('locations/', Locations.as_view()),
     path('formOptions/', ChoicesOptions.as_view())
 ]
