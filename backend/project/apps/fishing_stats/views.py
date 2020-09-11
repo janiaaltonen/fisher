@@ -6,9 +6,6 @@ from rest_framework import mixins, status
 from rest_framework import generics
 from requests import get
 from rest_framework import permissions
-from rest_framework.request import Request
-from django.views.decorators.csrf import csrf_exempt
-from django.utils.decorators import method_decorator
 
 
 class AllEvents(APIView):
@@ -26,6 +23,7 @@ class AllEvents(APIView):
         queryset = fe.get_events(self.request.user.id)
         serializer = EventSerializer(queryset, many=True)
         return Response(serializer.data)
+
 
 class CreateEvent(mixins.CreateModelMixin, generics.GenericAPIView):
     serializer_class = FullEventSerializer
@@ -94,6 +92,30 @@ class EventDetails(mixins.RetrieveModelMixin,
         return self.delete_response(successful)
 
     def delete_response(self, successful):
+        if successful:
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+
+class StatsDetails(mixins.DestroyModelMixin,
+                  generics.GenericAPIView):
+
+    def delete(self, request, **kwargs):
+        stats_id = kwargs['stats_id']
+        ft = FishingTechnique()
+        successful = ft.delete_technique(stats_id)
+        if successful:
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+
+class CatchDetails(mixins.DestroyModelMixin,
+                  generics.GenericAPIView):
+
+    def delete(self, request, **kwargs):
+        catch_id = kwargs['catch_id']
+        fc = FishCatch()
+        successful = fc.delete_catch(catch_id)
         if successful:
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(status=status.HTTP_404_NOT_FOUND)
