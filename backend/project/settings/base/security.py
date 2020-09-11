@@ -11,7 +11,7 @@ CORS_ALLOW_CREDENTIALS = True
 
 # Allow only in dev. mode
 # When set to None, cookie can be used with CORS
-CSRF_COOKIE_SAMESITE = None
+
 
 AUTH_PASSWORD_VALIDATORS = [
     {
