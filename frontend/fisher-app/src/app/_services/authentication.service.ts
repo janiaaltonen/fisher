@@ -8,7 +8,7 @@ import {Router} from '@angular/router';
   providedIn: 'root'
 })
 export class AuthenticationService {
-  private baseUrl = 'http://127.0.0.1:8000';
+  private baseUrl = 'http://localhost:8000';
   httpHeaders = new HttpHeaders();
   private userSubject: BehaviorSubject<any>;
   public user: Observable<any>;
@@ -28,6 +28,7 @@ export class AuthenticationService {
     };
     return this.http.post(this.baseUrl + '/auth', body, {headers: this.httpHeaders, observe: 'response'})
       .pipe(map(resp => {
+        console.log(resp.headers.keys());
         localStorage.setItem('user', JSON.stringify(resp.body));
         this.userSubject.next(resp.body);
         return resp.body;
