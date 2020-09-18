@@ -10,7 +10,7 @@ export class FishingStatsService {
   private baseUrl = 'http://localhost:8000';
   private httpHeaders = new HttpHeaders({'Content-type': 'application/json'});
   // quick fix to make front work with api
-  private httpHeaders2 = new HttpHeaders({'x-CSRFTOKEN': 'a2Rs8viYx7xpuOAlJuGUVd0INzjdibiMmEjGBqScmZWIurKM8vZ9NEZ7nNX77BRf'});
+  private httpHeaders2 = new HttpHeaders({'X-CSRFTOKEN': 'Vt8bdg3GGK8APgeuKs6EnGtHQkGEBaKY492F8Z3aJo5IdVEeHHgpRj4LqnTs0XGK'});
 
   constructor(private http: HttpClient) { }
 
@@ -29,15 +29,20 @@ export class FishingStatsService {
     return this.http.get(this.baseUrl + '/formOptions/');
   }
 
+  updateFishingEvent(id, event): Observable<any> {
+    return this.http.put(this.baseUrl + `/events/details/${id}/`, event, { headers: this.httpHeaders2, observe: 'response'});
+  }
+
   deleteFishingEvent(id): Observable<any> {
-    return this.http.delete(this.baseUrl + `/events/details/${id}/`, { observe: 'response'});
+    return this.http.delete(this.baseUrl + `/events/details/${id}/`, { headers: this.httpHeaders2, observe: 'response'});
   }
 
   deleteStat(eventId, statId): Observable<any> {
-    return this.http.delete(this.baseUrl + `/events/details/${eventId}/stats/${statId}/`, {observe: 'response'});
+    return this.http.delete(this.baseUrl + `/events/details/${eventId}/stats/${statId}/`,
+      {headers: this.httpHeaders2, observe: 'response'});
   }
 
   deleteCatch(eventId, catchId): Observable<any> {
-    return this.http.delete(this.baseUrl + `/events/details/${eventId}/catches/${catchId}/`, {observe: 'response'});
+    return this.http.delete(this.baseUrl + `/events/details/${eventId}/catches/${catchId}/`, {headers: this.httpHeaders2, observe: 'response'});
   }
 }
