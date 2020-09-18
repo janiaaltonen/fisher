@@ -1,3 +1,7 @@
+/**
+ * consider moving form to own class. Its needed also at least in add component and probably even somewhere else
+ */
+
 import { Component, OnInit } from '@angular/core';
 import {FishingEvent} from '@app/_models/fishing-event.model';
 import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';

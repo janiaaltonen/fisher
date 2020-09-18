@@ -27,14 +27,15 @@
         <div class="card m-1">
           <div formGroupName="{{ methodIndex }}">
             <div class="card-header">
-              <div class="form-group row">
-                <label [attr.for]="'fishing_method' + methodIndex" class="col-sm-2 col-form-label">Fishing method</label>
-                <div class="col-sm-4">
-                  <select  class="custom-select" formControlName="fishing_method" [id]="'fishing_method' + methodIndex">
-                    <option *ngFor="let m of methods; let k=index" [value]="methods[k].key"> {{ methods[k].value }} </option>
-                  </select>
-                </div>
-              </div>
+              <ul class="nav nav-tabs card-header-tabs">
+                <li class="nav-item">
+                  <a class="nav-link active">
+                    <select  class="custom-select font-weight-bold" formControlName="fishing_method" [id]="'fishing_method' + methodIndex">
+                      <option *ngFor="let m of methods; let k=index" [value]="methods[k].key"> {{ methods[k].value }} </option>
+                    </select>
+                  </a>
+                </li>
+              </ul>
             </div>
             <div formArrayName="catches">
               <div class="card-body">

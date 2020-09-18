@@ -12,7 +12,6 @@ export class DetailsComponent implements OnInit {
   id: string;
   fishingEvent = new FishingEvent();
   active = 0;
-  catches;
 
   constructor(private route: ActivatedRoute, private statService: FishingStatsService, private router: Router) {
   }
