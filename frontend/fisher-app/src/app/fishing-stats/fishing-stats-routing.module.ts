@@ -14,7 +14,8 @@ const routes: Routes = [
       { path: '', component: ListComponent },
       { path: 'add', component: AddComponent },
       { path: 'details/:id', component: DetailsComponent },
-      { path: 'details/:id/edit', component: EditComponent }
+      { path: 'details/:id/edit', component: EditComponent },
+      { path: 'details/:id/methods/:methodIndex/edit', component: EditComponent}
     ]
   }
 ];
