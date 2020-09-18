@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import {FishingEvent} from '@app/_models/fishing-event.model';
 import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {FishingStatsService} from '@app/_services';
+import {forkJoin} from 'rxjs';
+import {filter, map, switchMap} from 'rxjs/operators';
+import {ActivatedRoute, Router} from '@angular/router';
 
 @Component({
   selector: 'app-edit',
@@ -9,6 +12,7 @@ import {FishingStatsService} from '@app/_services';
   styleUrls: ['./edit.component.css']
 })
 export class EditComponent implements OnInit {
+  methodIndex: number;
   fishingEvent = new FishingEvent();
   form: FormGroup;
   emptyArr = [
@@ -20,12 +24,12 @@ export class EditComponent implements OnInit {
   methods = this.emptyArr;
   fishSpecies = this.emptyArr;
   lures = this.emptyArr;
-  catchesToDelete = [];
-  statsToDelete = [];
 
-  constructor(private formBuilder: FormBuilder, private api: FishingStatsService) { }
+  constructor(private formBuilder: FormBuilder, private api: FishingStatsService, private router: Router, private route: ActivatedRoute) { }
 
   ngOnInit(): void {
+    this.methodIndex = this.route.snapshot.params.methodIndex;
+    console.log(this.methodIndex);
     this.api.getFormOptions().subscribe(
       data => {
         this.methods = data.fishing_methods;
@@ -35,12 +39,22 @@ export class EditComponent implements OnInit {
     );
     // get the current fishingEvent from router state attribute
     this.fishingEvent = history.state.data;
+    console.log(this.fishingEvent.stats[0]);
     console.log(this.fishingEvent);
     this.form = this.formBuilder.group({
       date: [this.fishingEvent.date, Validators.required],
       location: [this.fishingEvent.location, Validators.required],
       persons: [this.fishingEvent.persons, Validators.required],
       stats: this.initStats()
+    });
+  }
+
+  initForm(): void {
+    const statObj = this.fishingEvent.stats[this.methodIndex];
+    this.form = this.formBuilder.group({
+      id: [statObj.id],
+      fishing_method: [statObj.fishing_method, Validators.required],
+      catches: this.initCatches(statObj)
     });
   }
 
@@ -85,6 +99,8 @@ export class EditComponent implements OnInit {
 
   get stats(): FormArray { return this.form.get('stats') as FormArray; }
 
+  getCatch()  { return this.stats.at(this.methodIndex).get('catches') as FormArray; }
+
   getCatches(stats): FormArray { return stats.get('catches') as FormArray; }
 
   addCatch(index) {
@@ -93,71 +109,56 @@ export class EditComponent implements OnInit {
     control.push(this.initNewCatch());
   }
 
-  removeStat(statIndex): void {
-    const statControl = this.stats.at(statIndex);
-    if (statControl.get('id').value !== -1) {
-      const statObj = {
-        id: statControl.get('id').value,
-        fishing_method: statControl.get('fishing_method').value,
-        catches: statControl.get('catches').value
-      };
-      this.statsToDelete.push(statObj);
-      console.log(statObj);
-    }
-    this.stats.removeAt(statIndex);
-  }
-
   removeCatch(statIndex, catchIndex): void {
-    const catchControl = ((this.stats).at(statIndex).get('catches') as FormArray).at(catchIndex);
-    if (catchControl.get('id').value !== -1) {
-      const catchObj = {
-        id: catchControl.get('id').value,
-        fish_species: catchControl.get('fish_species').value,
-        fish_details: catchControl.get('fish_details').value,
-        lure: catchControl.get('lure').value,
-        lure_details: catchControl.get('lure_details').value
-      };
-      this.catchesToDelete.push(catchObj);
-    }
     ((this.stats).at(statIndex).get('catches') as FormArray).removeAt(catchIndex);
   }
 
   submit(): void {
-    /**
-     * delete wanted stats from backend
-     * check duplicate catches between stats -> catches and catchesToRemove [], if there are any, remove them
-     * delete remaining wanted catches from backend
-     * update event with new data or/and add new stats and catches to it
-     * how to implement multiple delete ops? in body of delete request? chaining multiple delete ops?
-     */
-    // button (method) should only be active if the form data has changed
-    if (this.statsToDelete.length > 0) {
-      this.removeDuplicateCatches();
-      if (this.statsToDelete.length === 1) {
-        // make only one DELETE request
-      } else {
-        // make bulk DELETE in body of delete request?
+    this.api.updateFishingEvent(this.fishingEvent.id, this.updateFishingEvent()).subscribe(
+      resp => {
+        this.router.navigate([`events/details/${this.fishingEvent.id}/`]);
       }
-    }
-    if (this.catchesToDelete.length > 0) {
-      if (this.catchesToDelete.length === 1) {
-        const catchId = this.catchesToDelete[0].id;
-        // make only one DELETE request
-      } else {
-        // make bulk DELETE request
-      }
-    }
-    // after deletions make PUT call to backend
+    );
   }
 
-  removeDuplicateCatches(): void {
-    for (const statObj of this.statsToDelete) {
-      for (const catchObj of statObj.catches) {
-        const i = this.catchesToDelete.findIndex(x => x.id === catchObj.id);
-        if (i !== -1) {
-          this.catchesToDelete.splice(i, 1);
+  updateFishingEvent() {
+    // creates specified json from form values
+    const statsArr = [];
+    let catchesArr = [];
+    let catchObj = {};
+    for (const statControl of this.stats.controls) {
+      for (const catchControl of this.getCatches(statControl).controls) {
+        if (catchControl.get('id') !== null) {
+          catchObj = {
+            id: catchControl.get('id').value,
+            fish_species: catchControl.get('fish_species').value,
+            fish_details: catchControl.get('fish_details').value,
+            lure: catchControl.get('lure').value,
+            lure_details: catchControl.get('lure_details').value
+          };
         }
+        else {
+          catchObj = {
+            fish_species: catchControl.get('fish_species').value,
+            fish_details: catchControl.get('fish_details').value,
+            lure: catchControl.get('lure').value,
+            lure_details: catchControl.get('lure_details').value
+          };
+        }
+        catchesArr.push(catchObj);
       }
+      const statObj = {
+        fishing_method: statControl.get('fishing_method').value,
+        catches: catchesArr
+      };
+      statsArr.push(statObj);
+      catchesArr = [];
     }
+    return {
+      date: this.f.date.value,
+      location: this.f.location.value,
+      persons: this.f.persons.value,
+      stats: statsArr
+    };
   }
 }

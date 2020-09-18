@@ -24,25 +24,15 @@
       </div>
 
       <div formArrayName="stats">
-        <div class="card m-1" *ngFor="let stat of stats.controls; let i = index">
-          <div formGroupName="{{ i }}">
+        <div class="card m-1">
+          <div formGroupName="{{ methodIndex }}">
             <div class="card-header">
               <div class="form-group row">
-                <label [attr.for]="'fishing_method' + i" class="col-sm-2 col-form-label">Fishing method</label>
+                <label [attr.for]="'fishing_method' + methodIndex" class="col-sm-2 col-form-label">Fishing method</label>
                 <div class="col-sm-4">
-                  <select  class="custom-select" formControlName="fishing_method" [id]="'fishing_method' + i">
+                  <select  class="custom-select" formControlName="fishing_method" [id]="'fishing_method' + methodIndex">
                     <option *ngFor="let m of methods; let k=index" [value]="methods[k].key"> {{ methods[k].value }} </option>
                   </select>
-                </div>
-                <div class="col-sm-2">
-                  <div class="text-danger">
-                    <a style="cursor: pointer" (click)="removeStat(i)">
-                      <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-trash" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
-                        <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
-                      </svg>
-                    </a>
-                  </div>
                 </div>
               </div>
             </div>
@@ -63,7 +53,7 @@
                     </th>
                   </tr>
                   </thead>
-                  <tbody *ngFor="let control of getCatches(stat).controls; let j = index">
+                  <tbody *ngFor="let control of getCatch().controls; let j = index">
                     <tr formGroupName="{{ j }}">
                       <td>
                         <select class="custom-select" formControlName="fish_species" [id]="'fish_species' + j" >
@@ -82,7 +72,7 @@
                         <input class="form-control" type="text" formControlName="lure_details" [id]="'lure_details' + j"/>
                       </td>
                       <td>
-                        <button type="button" class="close mt-1" aria-label="Close" (click)="removeCatch(i, j)">
+                        <button type="button" class="close mt-1" aria-label="Close" (click)="removeCatch(methodIndex, j)">
                           <span aria-hidden="true">&times;</span>
                         </button>
                       </td>
@@ -90,7 +80,7 @@
                 </tbody>
                 </table>
                 <div class="form-group">
-                  <button class="btn btn-outline-primary btn-sm" id="addCatchBtn" (click)="addCatch(i)"> Add Catch </button>
+                  <button class="btn btn-outline-primary btn-sm" id="addCatchBtn" (click)="addCatch(methodIndex)"> Add Catch </button>
                 </div>
               </div>
             </div>
@@ -98,7 +88,6 @@
           </div>
         </div>
       </div>
-      <button type="button" class="btn btn-outline-primary btn-sm"> Add Fishing Method </button>
     </div>
   </form>
   <div class="card-footer text-center">
