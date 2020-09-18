@@ -16,14 +16,15 @@
   </div>
   <div class="card-body">
     <p class="card-text"> Henkilöt {{this.fishingEvent.persons}} </p>
-    <div class="card" *ngFor="let stat of fishingEvent.stats; let i=index">
+    <div class="card">
       <div class="card-header">
         <ul class="nav nav-tabs card-header-tabs">
-          <li class="nav-item">
-            <a class="nav-link active text-dark font-weight-bold"> {{ stat.fishing_method }} </a>
+          <li class="nav-item" *ngFor="let stat of fishingEvent.stats; let i = index">
+            <a *ngIf="active == i" class="nav-link active text-dark font-weight-bold"> {{ stat.fishing_method }} </a>
+            <a *ngIf="active !== i" class="nav-link text-dark" (click)="test(i)"> {{ stat.fishing_method }} </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link text-info" (click)="EditFishingEvent()" style="cursor: pointer"> Muokkaa </a>
+            <a class="nav-link text-info" style="cursor: pointer"> + Lisää uusi </a>
           </li>
         </ul>
       </div>
@@ -37,7 +38,7 @@
             <th> Uistimen lisätiedot </th>
           </tr>
           </thead>
-          <tbody *ngFor="let fCatch of stat.catches">
+          <tbody *ngFor="let fCatch of fishingEvent.stats[active].catches">
           <tr>
             <td> {{ fCatch.fish_species }} </td>
             <td> {{ fCatch.fish_details }} </td>
@@ -46,6 +47,10 @@
           </tr>
           </tbody>
         </table>
+        <div>
+          <button class="btn btn-outline-primary btn-sm mr-3" (click)="editFishingStat(active)"> Muokkaa </button>
+          <button class="btn btn-outline-danger btn-sm" (click)="deleteStat(fishingEvent.id, active)"> Poista </button>
+        </div>
       </div>
     </div>
   </div>

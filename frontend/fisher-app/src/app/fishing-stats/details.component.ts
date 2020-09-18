@@ -11,6 +11,8 @@ import { FishingEvent } from '@app/_models/fishing-event.model';
 export class DetailsComponent implements OnInit {
   id: string;
   fishingEvent = new FishingEvent();
+  active = 0;
+  catches;
 
   constructor(private route: ActivatedRoute, private statService: FishingStatsService, private router: Router) {
   }
@@ -20,8 +22,19 @@ export class DetailsComponent implements OnInit {
     this.statService.getEventById(this.id).subscribe(data => this.fishingEvent = data);
   }
 
-  EditFishingEvent(): void {
-    this.router.navigate(['edit/'], { relativeTo: this.route, state: {data: this.fishingEvent}});
+  editFishingStat(statIndex): void {
+    this.router.navigate([`methods/${statIndex}/edit`], { relativeTo: this.route, state: {data: this.fishingEvent}});
+  }
+
+  deleteStat(eventId, statIndex): void {
+    this.statService.deleteStat(eventId, this.fishingEvent.stats[statIndex].id).subscribe(
+      resp => {
+        if (resp.status === 204) {
+          this.fishingEvent.stats.splice(statIndex, 1);
+          this.active = 0;
+        }
+      }
+    );
   }
 
   deleteEvent(id): void {
@@ -35,5 +48,8 @@ export class DetailsComponent implements OnInit {
         console.log(error);
       }
     );
+  }
+  test(index) {
+    this.active = index;
   }
 }
