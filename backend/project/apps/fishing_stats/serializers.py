@@ -75,12 +75,29 @@ class FullEventSerializer(serializers.ModelSerializer):
             catches = method_stat.get('catches')
             technique.fishing_method = method_stat.get('fishing_method', technique.fishing_method)
             technique.save()
-            for catch in catches:
-                fish_catch = fish_catches.pop(0)
-                fish_catch.fish_species = catch.get('fish_species', fish_catch.fish_species)
-                fish_catch.fish_details = catch.get('fish_details', fish_catch.fish_details)
-                fish_catch.lure = catch.get('lure', fish_catch.lure)
-                fish_catch.lure_details = catch.get('lure_details', fish_catch.lure_details)
-                fish_catch.save()
+            # Create new fish_catch objects if there isn't any catches in db (nothing to update)
+            if len(fish_catches) == 0:
+                for catch in catches:
+                    FishCatch.objects.create(fishing_technique=technique, **catch)
+            else:
+                # Delete any catches that are not included in request
+                catch_ids = [catch.get('id') for catch in catches]
+                for catch in fish_catches:
+                    if catch.id not in catch_ids:
+                        catch.delete()
+                for catch in catches:
+                    # Create new fish_catch object if it doesn't have id
+                    if catch.get('id') is None:
+                        FishCatch.objects.create(fishing_technique=technique, **catch)
+                    # Update rest of the catches
+                    else:
+                        fish_catch = fish_catches.pop(0)
+                        print(fish_catch)
+                        fish_catch.id = catch.get('id', fish_catch.id)
+                        fish_catch.fish_species = catch.get('fish_species', fish_catch.fish_species)
+                        fish_catch.fish_details = catch.get('fish_details', fish_catch.fish_details)
+                        fish_catch.lure = catch.get('lure', fish_catch.lure)
+                        fish_catch.lure_details = catch.get('lure_details', fish_catch.lure_details)
+                        fish_catch.save()
 
         return instance

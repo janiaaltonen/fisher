@@ -68,13 +68,14 @@ class EventDetails(mixins.RetrieveModelMixin,
             serializer.save(user_id=request.user.id)  # save() method used to invoke serializer's create() method
         return Response(serializer.data, status.HTTP_201_CREATED)
 
-    def put(self, request):
+    def put(self, request, **kwargs):
         """
         At this point request data needs to provide all the fields even those which aren't updated
         """
+        event_id = kwargs['event_id']
         data = request.data
         fe = FishingEvent()
-        instance = fe.get_event_as_instance(self.request.query_params['id'])
+        instance = fe.get_event_as_instance(event_id)
         serializer = self.serializer_class(instance, data=data,
                                            partial=True)  # if PATCH wanted in this method then partial=True needed
         serializer.is_valid()
