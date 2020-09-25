@@ -86,11 +86,13 @@ class FishCatch(models.Model):
     SPINNER = 'Spinner'
     SPOONLURE = 'Spoon lure'
     WOBBLER = 'Wobbler'
+    WORM = 'Worm'
     LURE_CHOICES = [
         (JIG, 'Jigi'),
         (SPINNER, 'Lippa'),
         (SPOONLURE, 'Lusikka'),
         (WOBBLER, 'Vaappu'),
+        (WORM, 'Mato'),
         (NONE, 'Ei viehettä')
     ]
     fish_species = models.CharField(max_length=20, choices=FISH_CHOICES, default=None, null=True, blank=True)

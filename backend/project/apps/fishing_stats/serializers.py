@@ -3,8 +3,10 @@ from .models import FishingEvent, FishCatch, FishingTechnique
 
 
 class CatchSerializer(serializers.ModelSerializer):
-    fish_species = serializers.ChoiceField(choices=FishCatch.FISH_CHOICES)
-    lure = serializers.ChoiceField(choices=FishCatch.LURE_CHOICES)
+    # fish_species = serializers.ChoiceField(choices=FishCatch.FISH_CHOICES)
+    # lure = serializers.ChoiceField(choices=FishCatch.LURE_CHOICES)
+    fish_species = serializers.CharField(source='get_fish_species_display')
+    lure = serializers.CharField(source='get_lure_display')
 
     class Meta:
         model = FishCatch
@@ -16,7 +18,8 @@ class CatchSerializer(serializers.ModelSerializer):
 
 class StatsSerializer(serializers.ModelSerializer):
     catches = CatchSerializer(many=True)  # adds related catches to specific technique
-    fishing_method = serializers.ChoiceField(choices=FishingTechnique.METHOD_CHOICES)
+    # fishing_method = serializers.ChoiceField(choices=FishingTechnique.METHOD_CHOICES)
+    fishing_method = serializers.CharField(source='get_fishing_method_display')
 
     class Meta:
         model = FishingTechnique
@@ -24,6 +27,17 @@ class StatsSerializer(serializers.ModelSerializer):
 
     def to_internal_value(self, data):
         return data
+
+    def create(self, validated_data):
+        event_id = validated_data['event_id']
+        validated_data.pop('event_id')
+        catches = validated_data.pop('catches')
+        fishing_technique = FishingTechnique.objects.create(fishing_event_id=event_id, **validated_data)
+
+        for catch in catches:
+            FishCatch.objects.create(fishing_technique=fishing_technique, **catch)
+
+        return fishing_technique
 
 
 class EventSerializer(serializers.ModelSerializer):
@@ -59,6 +73,7 @@ class FullEventSerializer(serializers.ModelSerializer):
         return fishing_event
 
     def update(self, instance, validated_data):
+        print(validated_data)
         event_stats_data = validated_data.pop('stats')
         fishing_techniques = instance.stats.all()
         fishing_techniques = list(fishing_techniques)
@@ -88,11 +103,11 @@ class FullEventSerializer(serializers.ModelSerializer):
                 for catch in catches:
                     # Create new fish_catch object if it doesn't have id
                     if catch.get('id') is None:
+                        catch.pop('id')
                         FishCatch.objects.create(fishing_technique=technique, **catch)
                     # Update rest of the catches
                     else:
                         fish_catch = fish_catches.pop(0)
-                        print(fish_catch)
                         fish_catch.id = catch.get('id', fish_catch.id)
                         fish_catch.fish_species = catch.get('fish_species', fish_catch.fish_species)
                         fish_catch.fish_details = catch.get('fish_details', fish_catch.fish_details)

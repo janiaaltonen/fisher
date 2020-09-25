@@ -1,6 +1,6 @@
 from rest_framework.views import APIView
 from .models import FishingEvent, FishingTechnique, FishCatch
-from .serializers import EventSerializer, FullEventSerializer
+from .serializers import EventSerializer, FullEventSerializer, StatsSerializer
 from rest_framework.response import Response
 from rest_framework import mixins, status
 from rest_framework import generics
@@ -99,7 +99,18 @@ class EventDetails(mixins.RetrieveModelMixin,
 
 
 class StatsDetails(mixins.DestroyModelMixin,
-                  generics.GenericAPIView):
+                   mixins.CreateModelMixin,
+                   generics.GenericAPIView):
+
+    serializer_class = StatsSerializer
+
+    def post(self, request, **kwargs):
+        event_id = kwargs['event_id']
+        data = request.data
+        serializer = self.serializer_class(data=data)
+        if serializer.is_valid():
+            serializer.save(event_id=event_id)
+        return Response(serializer.data, status.HTTP_201_CREATED)
 
     def delete(self, request, **kwargs):
         stats_id = kwargs['stats_id']
