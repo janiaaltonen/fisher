@@ -3,11 +3,28 @@ from django.contrib.auth import get_user_model
 
 
 class FishingEvent(models.Model):
+    SNOWY = 'snowy'
+    RAINY = 'rainy'
+    CLOUDY = 'cloydy'
+    PARTLY_CLOUDY = 'partly_cloudy'
+    SUNNY = 'sunny'
+    WEATHER_CHOICES = [
+        (SNOWY, 'Lumisade'),
+        (RAINY, 'Vesisade'),
+        (CLOUDY, 'Pilvistä'),
+        (PARTLY_CLOUDY, 'Puolipilvistä'),
+        (SUNNY, 'Aurinkoista')
+    ]
     User = get_user_model()
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     date = models.DateField()
     location = models.CharField(max_length=100)
+    location_details = models.TextField(default=None, null=True, blank=True)
+    start_time = models.TimeField(default=None, null=True, blank=True)
+    end_time = models.TimeField(default=None, null=True, blank=True)
+    air_temperature = models.IntegerField(default=None, null=True, blank=True)
     persons = models.IntegerField()
+    weather = models.CharField(max_length=20, choices=WEATHER_CHOICES, default=None, null=True, blank=True)
 
     def __str__(self):
         date_and_place = self.date.strftime('%d.%m.%Y') + ' ' + self.location
@@ -108,4 +125,3 @@ class FishCatch(models.Model):
             return True
         except self.DoesNotExist:
             return False
-

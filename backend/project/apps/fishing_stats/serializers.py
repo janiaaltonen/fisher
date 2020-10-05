@@ -1,5 +1,7 @@
 from rest_framework import serializers
 from .models import FishingEvent, FishCatch, FishingTechnique
+from django.db.models import Prefetch, Count, Q
+from django.db import connection
 
 
 class CatchSerializer(serializers.ModelSerializer):
@@ -41,9 +43,28 @@ class StatsSerializer(serializers.ModelSerializer):
 
 
 class EventSerializer(serializers.ModelSerializer):
+    weather = serializers.CharField(source='get_weather_display')
+    total_catches = serializers.SerializerMethodField()
+
     class Meta:
         model = FishingEvent
-        fields = ['id', 'date', 'location', 'persons']
+        fields = ['id', 'date', 'location', 'location_details', 'start_time', 'end_time', 'weather',
+                  'air_temperature', 'persons', 'total_catches']
+
+    def to_internal_value(self, data):
+        return data
+
+    def get_total_catches(self, obj):
+        # SELECT Count(fishing_technique_id) FROM [table] WHERE fishing_technique_id IN()
+        # is current method efficient enough?!
+        # can queryset API's prefetch_related
+        # or .annotate() be used to reduce the number of db queries
+
+        techs = FishingTechnique.objects.filter(fishing_event=obj)
+        amount = 0
+        for tech in techs:
+            amount += FishCatch.objects.filter(fishing_technique_id=tech.id).count()
+        return amount
 
 
 class FullEventSerializer(serializers.ModelSerializer):
