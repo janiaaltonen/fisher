@@ -42,6 +42,11 @@ export class FishingStatsService {
       {headers: this.httpHeaders2, observe: 'response'});
   }
 
+  createStat(eventId, obj): Observable<any> {
+    return this.http.post(this.baseUrl + `/events/details/${eventId}/stats/create/`,
+      obj, {headers: this.httpHeaders2, observe: 'response'});
+  }
+
   deleteCatch(eventId, catchId): Observable<any> {
     return this.http.delete(this.baseUrl + `/events/details/${eventId}/catches/${catchId}/`, {headers: this.httpHeaders2, observe: 'response'});
   }

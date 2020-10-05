@@ -1,37 +1,30 @@
-<div class="card m-5">
-  <div class="card-header">
+<div class="card">
+  <div class="card-header bg-dark text-white">
     {{this.fishingEvent.date}} {{this.fishingEvent.location}}
   </div>
   <form [formGroup]="form">
     <div class="card-body">
-      <div class="form-group row">
-        <label for="location" class="col-sm-2 col-form-label">Location</label>
-        <div class="col-sm-4">
-          <input type="text" class="form-control" id="location" formControlName="location" [value]="f.location.value">
-        </div>
-      </div>
-      <div class="form-group row">
-        <label for="date" class="col-sm-2 col-form-label">Date</label>
-        <div class="col-sm-4">
-          <input type="date" class="form-control" id="date"  formControlName="date" [value]="f.date.value">
-        </div>
-      </div>
-      <div class="form-group row">
-        <label for="persons" class="col-sm-2 col-form-label">Persons</label>
-        <div class="col-sm-4">
-          <input type="number" class="form-control" id="persons" formControlName="persons" [value]="f.persons.value">
-        </div>
-      </div>
+      <p class="card-text"> Henkilöt {{this.fishingEvent.persons}} </p>
 
-      <div formArrayName="stats">
         <div class="card m-1">
-          <div formGroupName="{{ methodIndex }}">
-            <div class="card-header">
+            <div class="card-header bg-dark text-white">
               <ul class="nav nav-tabs card-header-tabs">
-                <li class="nav-item">
-                  <a class="nav-link active">
+                <li class="nav-item" *ngFor="let stat of fishingEvent.stats; let i = index">
+                  <a *ngIf="methodIndex == i; else unActive" class="nav-link active m-0 p-1">
                     <select  class="custom-select font-weight-bold" formControlName="fishing_method" [id]="'fishing_method' + methodIndex">
-                      <option *ngFor="let m of methods; let k=index" [value]="methods[k].key"> {{ methods[k].value }} </option>
+                      <option *ngFor="let m of methods; let k=index" [value]="methods[k].value"> {{ methods[k].value }} </option>
+                    </select>
+                  </a>
+                  <ng-template #unActive>
+                    <a class="nav-link p-2 m-0 disabled text-white">
+                      {{stat.fishing_method}}
+                    </a>
+                  </ng-template>
+                </li>
+                <li *ngIf="methodIndex == -1" class="nav-item">
+                  <a class="nav-link active m-0 p-1">
+                    <select  class="custom-select font-weight-bold" formControlName="fishing_method" [id]="'fishing_method' + methodIndex">
+                      <option *ngFor="let m of methods; let k=index" [value]="methods[k].value"> {{ methods[k].value }} </option>
                     </select>
                   </a>
                 </li>
@@ -39,7 +32,7 @@
             </div>
             <div formArrayName="catches">
               <div class="card-body">
-                <table class="table">
+                <table class="table table-hover">
                   <thead>
                   <tr>
                     <th> Kalalaji </th>
@@ -54,26 +47,26 @@
                     </th>
                   </tr>
                   </thead>
-                  <tbody *ngFor="let control of getCatch().controls; let j = index">
-                    <tr formGroupName="{{ j }}">
+                  <tbody *ngFor="let control of getCatches().controls; let i = index">
+                    <tr formGroupName="{{ i }}">
                       <td>
-                        <select class="custom-select" formControlName="fish_species" [id]="'fish_species' + j" >
-                          <option *ngFor="let species of fishSpecies; let k=index" [value]="fishSpecies[k].key"> {{ fishSpecies[k].value }} </option>
+                        <select class="custom-select custom-select-sm" formControlName="fish_species" [id]="'fish_species' + i" >
+                          <option *ngFor="let species of fishSpecies; let k=index" [value]="fishSpecies[k].value"> {{ fishSpecies[k].value }} </option>
                         </select>
                       </td>
                       <td>
-                        <input class="form-control" type="text" formControlName="fish_details" [id]="'fish_details' + j"/>
+                        <input class="form-control form-control-sm" type="text" formControlName="fish_details" [id]="'fish_details' + i"/>
                       </td>
                       <td>
-                        <select class="custom-select" formControlName="lure" [id]="'lure' + j">
-                          <option *ngFor="let lure of lures; let k=index" [value]="lures[k].key"> {{ lures[k].value }} </option>
+                        <select class="custom-select custom-select-sm" formControlName="lure" [id]="'lure' + i">
+                          <option *ngFor="let lure of lures; let k=index" [value]="lures[k].value"> {{ lures[k].value }} </option>
                         </select>
                       </td>
                       <td>
-                        <input class="form-control" type="text" formControlName="lure_details" [id]="'lure_details' + j"/>
+                        <input class="form-control form-control-sm" type="text" formControlName="lure_details" [id]="'lure_details' + i"/>
                       </td>
                       <td>
-                        <button type="button" class="close mt-1" aria-label="Close" (click)="removeCatch(methodIndex, j)">
+                        <button type="button" class="close mt-1" aria-label="Close" (click)="removeCatch(i)">
                           <span aria-hidden="true">&times;</span>
                         </button>
                       </td>
@@ -81,14 +74,12 @@
                 </tbody>
                 </table>
                 <div class="form-group">
-                  <button class="btn btn-outline-primary btn-sm" id="addCatchBtn" (click)="addCatch(methodIndex)"> Add Catch </button>
+                  <button class="btn btn-outline-primary btn-sm" id="addCatchBtn" (click)="addCatch()"> Add Catch </button>
                 </div>
               </div>
             </div>
 
-          </div>
         </div>
-      </div>
     </div>
   </form>
   <div class="card-footer text-center">

@@ -21,8 +21,15 @@ export class DetailsComponent implements OnInit {
     this.statService.getEventById(this.id).subscribe(data => this.fishingEvent = data);
   }
 
-  editFishingStat(statIndex): void {
+  get statsLength() { return this.fishingEvent.stats.length; }
+
+  editFishingMethod(statIndex): void {
     this.router.navigate([`methods/${statIndex}/edit`], { relativeTo: this.route, state: {data: this.fishingEvent}});
+  }
+
+  addNewFishingEvent(): void {
+    const newIndex = -1;
+    this.router.navigate([`methods/${newIndex}/edit`], { relativeTo: this.route, state: {data: this.fishingEvent}});
   }
 
   deleteStat(eventId, statIndex): void {

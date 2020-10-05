@@ -1,35 +1,36 @@
-<div class="card m-5">
-  <div class="card-header">
+<div class="card">
+  <div class="card-header bg-dark text-white font-weight-bold">
     <div class="d-inline-block">
       <p>{{this.fishingEvent.date}} {{this.fishingEvent.location}}</p>
     </div>
     <div class="d-inline-block float-right">
-      <div class="text-danger">
+      <div class="text-white">
         <a style="cursor: pointer" (click)="deleteEvent(fishingEvent.id)">
           <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-trash" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
             <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
-          </svg>
+          </svg> Poista
         </a>
       </div>
     </div>
   </div>
   <div class="card-body">
     <p class="card-text"> Henkilöt {{this.fishingEvent.persons}} </p>
+
     <div class="card">
-      <div class="card-header">
+      <div class="card-header bg-dark">
         <ul class="nav nav-tabs card-header-tabs">
           <li class="nav-item" *ngFor="let stat of fishingEvent.stats; let i = index">
             <a *ngIf="active == i" class="nav-link active text-dark font-weight-bold"> {{ stat.fishing_method }} </a>
-            <a *ngIf="active !== i" class="nav-link text-dark" (click)="test(i)"> {{ stat.fishing_method }} </a>
+            <a *ngIf="active !== i" class="nav-link text-white" style="cursor: pointer" (click)="test(i)"> {{ stat.fishing_method }} </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link text-info" style="cursor: pointer"> + Lisää uusi </a>
+            <a class="nav-link text-white" style="cursor: pointer" (click)="addNewFishingEvent()"> + Lisää uusi </a>
           </li>
         </ul>
       </div>
       <div class="card-body">
-        <table class="table">
+        <table class="table table-hover">
           <thead>
           <tr>
             <th> Kalalaji </th>
@@ -48,8 +49,8 @@
           </tbody>
         </table>
         <div>
-          <button class="btn btn-outline-primary btn-sm mr-3" (click)="editFishingStat(active)"> Muokkaa </button>
-          <button class="btn btn-outline-danger btn-sm" (click)="deleteStat(fishingEvent.id, active)"> Poista </button>
+          <button class="btn btn-outline-primary btn-sm mr-3" (click)="editFishingMethod(active)"> Muokkaa </button>
+          <button *ngIf="statsLength > 1" class="btn btn-outline-danger btn-sm" (click)="deleteStat(fishingEvent.id, active)"> Poista </button>
         </div>
       </div>
     </div>

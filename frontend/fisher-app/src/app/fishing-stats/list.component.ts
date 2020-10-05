@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FishingStatsService} from '@app/_services';
 import {ActivatedRoute, Router} from '@angular/router';
+import {FishingEventOverview} from '@app/_models/fishing-event-overview';
 
 @Component({
   selector: 'app-list',
@@ -8,13 +9,7 @@ import {ActivatedRoute, Router} from '@angular/router';
   styleUrls: ['./list.component.css']
 })
 export class ListComponent implements OnInit {
-  fishingEvents: [
-    {
-      id: -1,
-      date: '',
-      location: '',
-      persons: ''
-    }];
+  fishingEvents: FishingEventOverview [];
 
   constructor(private stats: FishingStatsService, private router: Router, private route: ActivatedRoute) { }
 
@@ -31,6 +26,24 @@ export class ListComponent implements OnInit {
         console.log(error);
       }
     );
+  }
+
+  eventStartTime(startTime) {
+    // start time is in string format hh:mm:ss
+    // modify it if user has given one else time is null
+    if (startTime) {
+      startTime = startTime.substring(0, 5);
+    }
+    return startTime;
+  }
+
+  eventEndTime(endTime) {
+    // end time is in string format hh:mm:ss
+    // modify it if user has given one else time is null
+    if (endTime) {
+      endTime = endTime.substring(0, 5);
+    }
+    return endTime;
   }
 
   addNewEvent(): void {

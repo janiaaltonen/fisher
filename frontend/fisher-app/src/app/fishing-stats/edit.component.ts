@@ -2,13 +2,12 @@
  * consider moving form to own class. Its needed also at least in add component and probably even somewhere else
  */
 
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FishingEvent} from '@app/_models/fishing-event.model';
 import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {FishingStatsService} from '@app/_services';
-import {forkJoin} from 'rxjs';
-import {filter, map, switchMap} from 'rxjs/operators';
 import {ActivatedRoute, Router} from '@angular/router';
+import {Catches} from '@app/_models/catches';
 
 @Component({
   selector: 'app-edit',
@@ -43,23 +42,24 @@ export class EditComponent implements OnInit {
     );
     // get the current fishingEvent from router state attribute
     this.fishingEvent = history.state.data;
-    console.log(this.fishingEvent.stats[0]);
-    console.log(this.fishingEvent);
-    this.form = this.formBuilder.group({
-      date: [this.fishingEvent.date, Validators.required],
-      location: [this.fishingEvent.location, Validators.required],
-      persons: [this.fishingEvent.persons, Validators.required],
-      stats: this.initStats()
-    });
+    this.initForm();
   }
 
   initForm(): void {
-    const statObj = this.fishingEvent.stats[this.methodIndex];
-    this.form = this.formBuilder.group({
-      id: [statObj.id],
-      fishing_method: [statObj.fishing_method, Validators.required],
-      catches: this.initCatches(statObj)
-    });
+    if (this.methodIndex > -1) {
+      console.log(this.methodIndex);
+      const statObj = this.fishingEvent.stats[this.methodIndex];
+      this.form = this.formBuilder.group({
+        id: [statObj.id],
+        fishing_method: [statObj.fishing_method, Validators.required],
+        catches: this.initCatches(statObj.catches)
+      });
+    } else {
+      this.form = this.formBuilder.group({
+        fishing_method: ['', Validators.required],
+        catches: this.formBuilder.array([])
+      });
+    }
   }
 
   initStats(): FormArray {
@@ -92,6 +92,7 @@ export class EditComponent implements OnInit {
 
   initNewCatch(): FormGroup {
     return this.formBuilder.group({
+      id: [null],
       fish_species: ['', Validators.required],
       fish_details: [''],
       lure: [''],
@@ -101,68 +102,66 @@ export class EditComponent implements OnInit {
 
   get f() { return this.form.controls; }
 
-  get stats(): FormArray { return this.form.get('stats') as FormArray; }
+  getCatches() { return this.form.get('catches') as FormArray; }
 
-  getCatch()  { return this.stats.at(this.methodIndex).get('catches') as FormArray; }
-
-  getCatches(stats): FormArray { return stats.get('catches') as FormArray; }
-
-  addCatch(index) {
-    const control = (this.stats).at(index).get('catches') as FormArray;
+  addCatch() {
+    const control = this.getCatches();
     console.log(control);
     control.push(this.initNewCatch());
   }
 
-  removeCatch(statIndex, catchIndex): void {
-    ((this.stats).at(statIndex).get('catches') as FormArray).removeAt(catchIndex);
+  removeCatch(catchIndex): void {
+    this.getCatches().removeAt(catchIndex);
   }
 
   submit(): void {
-    this.api.updateFishingEvent(this.fishingEvent.id, this.updateFishingEvent()).subscribe(
-      resp => {
-        this.router.navigate([`events/details/${this.fishingEvent.id}/`]);
-      }
-    );
+    if (this.methodIndex > -1) {
+      this.updateFishingEvent();
+      this.api.updateFishingEvent(this.fishingEvent.id, this.fishingEvent).subscribe(
+        resp => {
+          this.router.navigate([`events/details/${this.fishingEvent.id}/`]);
+        }
+      );
+    } else {
+      this.api.createStat(this.fishingEvent.id, this.createNewStat()).subscribe(
+        resp => {
+          this.router.navigate([`events/details/${this.fishingEvent.id}/`]);
+        }
+      );
+    }
   }
 
-  updateFishingEvent() {
-    // creates specified json from form values
-    const statsArr = [];
-    let catchesArr = [];
-    let catchObj = {};
-    for (const statControl of this.stats.controls) {
-      for (const catchControl of this.getCatches(statControl).controls) {
-        if (catchControl.get('id') !== null) {
-          catchObj = {
-            id: catchControl.get('id').value,
-            fish_species: catchControl.get('fish_species').value,
-            fish_details: catchControl.get('fish_details').value,
-            lure: catchControl.get('lure').value,
-            lure_details: catchControl.get('lure_details').value
-          };
-        }
-        else {
-          catchObj = {
-            fish_species: catchControl.get('fish_species').value,
-            fish_details: catchControl.get('fish_details').value,
-            lure: catchControl.get('lure').value,
-            lure_details: catchControl.get('lure_details').value
-          };
-        }
-        catchesArr.push(catchObj);
-      }
-      const statObj = {
-        fishing_method: statControl.get('fishing_method').value,
-        catches: catchesArr
+  updateFishingEvent(): void {
+    const arr: Catches[] = [];
+    for (const c of this.getCatches().controls) {
+      const obj = {
+        id: c.get('id').value,
+        fish_species: c.get('fish_species').value,
+        fish_details: c.get('fish_details').value,
+        lure: c.get('lure').value,
+        lure_details: c.get('lure_details').value
       };
-      statsArr.push(statObj);
-      catchesArr = [];
+      arr.push(obj);
+    }
+    this.fishingEvent.stats[this.methodIndex].fishing_method = this.f.fishing_method.value;
+    this.fishingEvent.stats[this.methodIndex].catches = arr;
+  }
+
+  createNewStat() {
+    const arr: Catches[] = [];
+    for (const c of this.getCatches().controls) {
+      const obj = {
+        id: c.get('id').value,
+        fish_species: c.get('fish_species').value,
+        fish_details: c.get('fish_details').value,
+        lure: c.get('lure').value,
+        lure_details: c.get('lure_details').value
+      };
+      arr.push(obj);
     }
     return {
-      date: this.f.date.value,
-      location: this.f.location.value,
-      persons: this.f.persons.value,
-      stats: statsArr
+      fishing_method: this.f.fishing_method.value,
+      catches: arr
     };
   }
 }
