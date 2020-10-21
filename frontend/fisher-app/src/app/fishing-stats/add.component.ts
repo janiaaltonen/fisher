@@ -7,7 +7,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 @Component({
   selector: 'app-add',
   templateUrl: './add.component.html',
-  styleUrls: ['./add.component.css']
+  styleUrls: ['./list.component.css', './add.component.css']
 })
 export class AddComponent implements OnInit {
   form: FormGroup;
@@ -39,6 +39,11 @@ export class AddComponent implements OnInit {
     this.form = this.formBuilder.group({
       date: ['', Validators.required],
       location: ['', Validators.required],
+      location_details: [''],
+      start_time: [''],
+      end_time: [''],
+      weather: [''],
+      air_temperature: [''],
       persons: ['', Validators.required],
       stats: this.formBuilder.array([
         this.initStats()
