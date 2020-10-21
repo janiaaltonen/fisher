@@ -8,11 +8,10 @@ class CatchSerializer(serializers.ModelSerializer):
     # fish_species = serializers.ChoiceField(choices=FishCatch.FISH_CHOICES)
     # lure = serializers.ChoiceField(choices=FishCatch.LURE_CHOICES)
     fish_species = serializers.CharField(source='get_fish_species_display')
-    lure = serializers.CharField(source='get_lure_display')
 
     class Meta:
         model = FishCatch
-        fields = ['id', 'fish_species', 'fish_details', 'lure', 'lure_details']
+        fields = ['id', 'fish_species', 'fish_details']
 
     def to_internal_value(self, data):
         return data
@@ -22,10 +21,11 @@ class StatsSerializer(serializers.ModelSerializer):
     catches = CatchSerializer(many=True)  # adds related catches to specific technique
     # fishing_method = serializers.ChoiceField(choices=FishingTechnique.METHOD_CHOICES)
     fishing_method = serializers.CharField(source='get_fishing_method_display')
+    lure = serializers.CharField(source='get_lure_display')
 
     class Meta:
         model = FishingTechnique
-        fields = ['id', 'fishing_method', 'catches']
+        fields = ['id', 'fishing_method', 'lure', 'lure_details', 'catches']
 
     def to_internal_value(self, data):
         return data
@@ -57,8 +57,7 @@ class EventSerializer(serializers.ModelSerializer):
     def get_total_catches(self, obj):
         # SELECT Count(fishing_technique_id) FROM [table] WHERE fishing_technique_id IN()
         # is current method efficient enough?!
-        # can queryset API's prefetch_related
-        # or .annotate() be used to reduce the number of db queries
+        # can queryset API's prefetch_related or .annotate() be used to reduce the number of db queries
 
         techs = FishingTechnique.objects.filter(fishing_event=obj)
         amount = 0
@@ -68,15 +67,20 @@ class EventSerializer(serializers.ModelSerializer):
 
 
 class FullEventSerializer(serializers.ModelSerializer):
+    weather = serializers.CharField(source='get_weather_display')
     stats = StatsSerializer(many=True)  # adds related stats to specific event
     id = serializers.IntegerField(required=False)
 
     class Meta:
         model = FishingEvent
-        fields = ['id', 'date', 'location', 'persons', 'stats']
+        fields = ['id', 'date', 'location', 'location_details', 'start_time', 'end_time', 'weather',
+                  'air_temperature', 'persons', 'stats']
         extra_kwargs = {
             'user_id': {'write_only': True}
         }
+
+    def to_internal_value(self, data):
+        return data
 
     def create(self, validated_data):
         fish_stats_data = validated_data.pop('stats')
@@ -100,6 +104,11 @@ class FullEventSerializer(serializers.ModelSerializer):
         fishing_techniques = list(fishing_techniques)
         instance.date = validated_data.get('date', instance.date)
         instance.location = validated_data.get('location', instance.location)
+        instance.location_details = validated_data.get('location_details', instance.location_details)
+        instance.start_time = validated_data.get('start_time', instance.start_time)
+        instance.end_time = validated_data.get('end_time', instance.end_time)
+        instance.weather = validated_data.get('weather', instance.weather)
+        instance.air_temperature = validated_data.get('air_temperature', instance.air_temperature)
         instance.persons = validated_data.get('persons', instance.persons)
         instance.user_id = validated_data.get('user_id', instance.user_id)
         instance.save()
@@ -110,6 +119,8 @@ class FullEventSerializer(serializers.ModelSerializer):
             fish_catches = list(fish_catches)
             catches = method_stat.get('catches')
             technique.fishing_method = method_stat.get('fishing_method', technique.fishing_method)
+            technique.lure = method_stat.get('lure', technique.lure)
+            technique.lure_details = method_stat.get('lure_details', technique.lure_details)
             technique.save()
             # Create new fish_catch objects if there isn't any catches in db (nothing to update)
             if len(fish_catches) == 0:
@@ -124,7 +135,6 @@ class FullEventSerializer(serializers.ModelSerializer):
                 for catch in catches:
                     # Create new fish_catch object if it doesn't have id
                     if catch.get('id') is None:
-                        catch.pop('id')
                         FishCatch.objects.create(fishing_technique=technique, **catch)
                     # Update rest of the catches
                     else:
@@ -132,8 +142,6 @@ class FullEventSerializer(serializers.ModelSerializer):
                         fish_catch.id = catch.get('id', fish_catch.id)
                         fish_catch.fish_species = catch.get('fish_species', fish_catch.fish_species)
                         fish_catch.fish_details = catch.get('fish_details', fish_catch.fish_details)
-                        fish_catch.lure = catch.get('lure', fish_catch.lure)
-                        fish_catch.lure_details = catch.get('lure_details', fish_catch.lure_details)
                         fish_catch.save()
 
         return instance

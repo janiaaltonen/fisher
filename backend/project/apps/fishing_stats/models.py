@@ -52,6 +52,7 @@ class FishingEvent(models.Model):
 
 
 class FishingTechnique(models.Model):
+    NONE = None
     CASTING = 'Casting'
     FLY_FISHING = 'Fly fishing'
     TROLLING = "Trolling"
@@ -64,8 +65,23 @@ class FishingTechnique(models.Model):
         (NET_FISHING, 'Verkko'),
         (POLE_FISHING, 'Onki')
     ]
+    JIG = 'Jig'
+    SPINNER = 'Spinner'
+    SPOONLURE = 'Spoon lure'
+    WOBBLER = 'Wobbler'
+    WORM = 'Worm'
+    LURE_CHOICES = [
+        (JIG, 'Jigi'),
+        (SPINNER, 'Lippa'),
+        (SPOONLURE, 'Lusikka'),
+        (WOBBLER, 'Vaappu'),
+        (WORM, 'Mato'),
+        (NONE, 'Ei viehettä')
+    ]
     fishing_method = models.CharField(max_length=20, choices=METHOD_CHOICES, default=None, null=True, blank=True)
     method_details = models.TextField(default=None, null=True, blank=True)
+    lure = models.CharField(max_length=20, choices=LURE_CHOICES, default=None, null=True, blank=True)
+    lure_details = models.TextField(default=None, null=True, blank=True)
     fishing_event = models.ForeignKey(FishingEvent, related_name='stats', on_delete=models.CASCADE)
 
     def __str__(self):
@@ -99,23 +115,8 @@ class FishCatch(models.Model):
         (ZANDER, 'Kuha'),
         (DEFAULT, 'Muu'),
     ]
-    JIG = 'Jig'
-    SPINNER = 'Spinner'
-    SPOONLURE = 'Spoon lure'
-    WOBBLER = 'Wobbler'
-    WORM = 'Worm'
-    LURE_CHOICES = [
-        (JIG, 'Jigi'),
-        (SPINNER, 'Lippa'),
-        (SPOONLURE, 'Lusikka'),
-        (WOBBLER, 'Vaappu'),
-        (WORM, 'Mato'),
-        (NONE, 'Ei viehettä')
-    ]
     fish_species = models.CharField(max_length=20, choices=FISH_CHOICES, default=None, null=True, blank=True)
     fish_details = models.TextField(default=None, null=True, blank=True)
-    lure = models.CharField(max_length=20, choices=LURE_CHOICES, default=None, null=True, blank=True)
-    lure_details = models.TextField(default=None, null=True, blank=True)
     fishing_technique = models.ForeignKey(FishingTechnique, related_name='catches', on_delete=models.CASCADE)
 
     def delete_catch(self, pk):
