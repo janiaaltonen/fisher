@@ -168,7 +168,7 @@ class ChoicesOptions(APIView):
         """
         method_choices = FishingTechnique.METHOD_CHOICES
         catch_choices = FishCatch.FISH_CHOICES
-        lure_choices = FishCatch.LURE_CHOICES
+        lure_choices = FishingTechnique.LURE_CHOICES
         self.fishing_methods = self.format_JSON(method_choices)
         self.catches = self.format_JSON(catch_choices)
         self.lures = self.format_JSON(lure_choices)
