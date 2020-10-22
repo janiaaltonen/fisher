@@ -11,9 +11,9 @@ class FishingEvent(models.Model):
     WEATHER_CHOICES = [
         (SNOWY, 'Lumisade'),
         (RAINY, 'Vesisade'),
-        (CLOUDY, 'Pilvistä'),
-        (PARTLY_CLOUDY, 'Puolipilvistä'),
-        (SUNNY, 'Aurinkoista')
+        (CLOUDY, 'Pilvinen '),
+        (PARTLY_CLOUDY, 'Puolipilvinen'),
+        (SUNNY, 'Aurinkoinen')
     ]
     User = get_user_model()
     user = models.ForeignKey(User, on_delete=models.CASCADE)

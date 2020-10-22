@@ -54,6 +54,8 @@ export class AddComponent implements OnInit {
   initStats(): FormGroup {
     return this.formBuilder.group({
         fishing_method: ['', Validators.required],
+        lure: [''],
+        lure_details: [''],
         catches: this.formBuilder.array([])
     });
   }
@@ -62,8 +64,6 @@ export class AddComponent implements OnInit {
     return this.formBuilder.group({
         fish_species: ['', Validators.required],
         fish_details: [''],
-        lure: [''],
-        lure_details: ['']
     });
   }
 
@@ -112,13 +112,13 @@ export class AddComponent implements OnInit {
         const catchObj = {
           fish_species: catchControl.get('fish_species').value,
           fish_details: catchControl.get('fish_details').value,
-          lure: catchControl.get('lure').value,
-          lure_details: catchControl.get('lure_details').value
         };
         catchesArr.push(catchObj);
       }
       const statObj = {
         fishing_method: statControl.get('fishing_method').value,
+        lure: statControl.get('lure').value,
+        lure_details: statControl.get('lure_details').value,
         catches: catchesArr
       };
       statsArr.push(statObj);
@@ -127,6 +127,11 @@ export class AddComponent implements OnInit {
     return {
       date: this.f.date.value,
       location: this.f.location.value,
+      location_details: this.f.location_details.value,
+      start_time: this.f.start_time.value,
+      end_time: this.f.end_time.value,
+      weather: this.f.weather.value,
+      air_temperature: this.f.air_temperature.value,
       persons: this.f.persons.value,
       stats: statsArr
     };
@@ -142,7 +147,6 @@ export class AddComponent implements OnInit {
   }
 
   createEvent() {
-   console.log('aa');
    this.submitted = true;
    console.log(this.f);
    if (this.form.invalid) {

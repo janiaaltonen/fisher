@@ -21,41 +21,41 @@
           </div>
           <div class="form-row">
             <div class="form-group col-md-6 required">
-              <label class="control-label col-form-label-sm mb-0" for="date"> Päivämäärä</label>
+              <label class="control-label col-form-label-sm mb-0" for="location_details"> Päivämäärä</label>
               <input class="form-control form-control-sm" type="date" formControlName="date" [ngClass]="{ 'is-invalid': submitted && f.date.errors }">
               <div *ngIf="submitted && f.date.errors" class="invalid-feedback">
                 <div *ngIf="f.date.errors.required">Date is required</div>
               </div>
             </div>
             <div class="form-group col-md-2">
-              <label class="control-label col-form-label-sm mb-0" for="date"> Alkuaika</label>
+              <label class="control-label col-form-label-sm mb-0" for="start_time"> Alkuaika</label>
               <input class="form-control form-control-sm" type="time" formControlName="start_time">
             </div>
             <div class="form-group col-md-2">
-              <label class="control-label col-form-label-sm mb-0" for="date"> Loppuaika</label>
+              <label class="control-label col-form-label-sm mb-0" for="end_time"> Loppuaika</label>
               <input class="form-control form-control-sm" type="time" formControlName="end_time">
             </div>
           </div>
           <div class="form-row">
             <legend class="col-form-label form-control-sm"> Sää </legend>
             <div class="form-check form-check-inline ml-2">
-              <input class="form-check-input" type="radio" id="inlineRadio1" value="option1" formControlName="weather">
+              <input class="form-check-input" type="radio" id="inlineRadio1" value="sunny" formControlName="weather">
               <label class="form-check-label col-form-label-sm" for="inlineRadio1">Aurinkoinen</label>
             </div>
             <div class="form-check form-check-inline ml-2">
-              <input class="form-check-input" type="radio" id="inlineRadio2" value="option2" formControlName="weather">
+              <input class="form-check-input" type="radio" id="inlineRadio2" value="partly_cloudy" formControlName="weather">
               <label class="form-check-label col-form-label-sm" for="inlineRadio2">Puolipilvinen</label>
             </div>
             <div class="form-check form-check-inline ml-2">
-              <input class="form-check-input" type="radio" id="inlineRadio3" value="option3" formControlName="weather">
+              <input class="form-check-input" type="radio" id="inlineRadio3" value="cloudy" formControlName="weather">
               <label class="form-check-label col-form-label-sm" for="inlineRadio3">Pilvinen</label>
             </div>
             <div class="form-check form-check-inline ml-2">
-              <input class="form-check-input" type="radio" id="inlineRadio4" value="option4" formControlName="weather">
+              <input class="form-check-input" type="radio" id="inlineRadio4" value="rainy" formControlName="weather">
               <label class="form-check-label col-form-label-sm" for="inlineRadio4">Vesisade</label>
             </div>
             <div class="form-check form-check-inline ml-2">
-              <input class="form-check-input" type="radio" id="inlineRadio5" value="option5" formControlName="weather">
+              <input class="form-check-input" type="radio" id="inlineRadio5" value="snowy" formControlName="weather">
               <label class="form-check-label col-form-label-sm" for="inlineRadio5">Lumisade</label>
             </div>
           </div>
@@ -100,13 +100,13 @@
                     </div>
                   </div>
                   <div class="form-group col-md-4">
-                    <label class="control-label col-form-label-sm mb-0" [attr.for]="'fishing_method' + i"> Viehe</label>
-                    <select  class="custom-select custom-select-sm" formControlName="lure" [id]="'lure' + i" [ngClass]="{ 'is-invalid': submitted && stat.get('fishing_method').errors }">
+                    <label class="control-label col-form-label-sm mb-0" [attr.for]="'lure' + i"> Viehe</label>
+                    <select  class="custom-select custom-select-sm" formControlName="lure" [id]="'lure' + i" [ngClass]="{ 'is-invalid': submitted && stat.get('lure').errors }">
                       <<option *ngFor="let lure of lures; let k=index" [value]="lures[k].key"> {{ lures[k].value }} </option>
                     </select>
                   </div>
                   <div class="form-group col-md-4">
-                    <label class="control-label col-form-label-sm mb-0" [attr.for]="'fishing_method' + i"> Vieheen lisätiedot</label>
+                    <label class="control-label col-form-label-sm mb-0" [attr.for]="'lure_details' + i"> Vieheen lisätiedot</label>
                     <input class="form-control form-control-sm" type="text" formControlName="lure_details" placeholder="esim. vieheen merkki, malli tai väri">
                   </div>
                 </div>
