@@ -61,11 +61,11 @@
           </div>
           <div class="form-row mt-3">
             <div class="form-group col-md-3">
-              <label class="control-label col-form-label-sm mb-0" for="persons"> Ilman lämpötila</label>
+              <label class="control-label col-form-label-sm mb-0" for="air_temperature"> Ilman lämpötila</label>
               <input class="form-control form-control-sm" type="number" formControlName="air_temperature">
             </div>
             <div class="form-group col-md-3 required">
-              <label class="control-label col-form-label-sm mb-0" for="persons"> Persons</label>
+              <label class="control-label col-form-label-sm mb-0" for="persons"> Kalastajien lkm</label>
               <input class="form-control form-control-sm" type="number" min="1" formControlName="persons" [ngClass]="{ 'is-invalid': submitted && f.persons.errors }">
               <div *ngIf="submitted && f.persons.errors" class="invalid-feedback">
                 <div *ngIf="f.persons.errors.required">Persons is required</div>

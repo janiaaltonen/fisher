@@ -1,58 +1,101 @@
-<div class="card">
-  <div class="card-header bg-dark text-white font-weight-bold">
-    <div class="d-inline-block">
-      <p>{{this.fishingEvent.date}} {{this.fishingEvent.location}}</p>
-    </div>
-    <div class="d-inline-block float-right">
-      <div class="text-white">
-        <a style="cursor: pointer" (click)="deleteEvent(fishingEvent.id)">
-          <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-trash" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
-            <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
-          </svg> Poista
-        </a>
+<div class="container">
+  <div class="row justify-content-md-center">
+    <div class="card col-md-8 p-1 m-1">
+      <div class="card-header gradient-bg">
+        <h4 class="card-title font-weight-bold  mt-1 text-white"> {{ fishingEvent.date }} </h4>
       </div>
-    </div>
-  </div>
-  <div class="card-body">
-    <p class="card-text"> Henkilöt {{this.fishingEvent.persons}} </p>
-
-    <div class="card">
-      <div class="card-header bg-dark">
-        <ul class="nav nav-tabs card-header-tabs">
-          <li class="nav-item" *ngFor="let stat of fishingEvent.stats; let i = index">
-            <a *ngIf="active == i" class="nav-link active text-dark font-weight-bold"> {{ stat.fishing_method }} </a>
-            <a *ngIf="active !== i" class="nav-link text-white" style="cursor: pointer" (click)="test(i)"> {{ stat.fishing_method }} </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link text-white" style="cursor: pointer" (click)="addNewFishingEvent()"> + Lisää uusi </a>
-          </li>
-        </ul>
-      </div>
-      <div class="card-body">
-        <table class="table table-hover">
-          <thead>
-          <tr>
-            <th> Kalalaji </th>
-            <th> Paino </th>
-            <th> Uistin </th>
-            <th> Uistimen lisätiedot </th>
-          </tr>
-          </thead>
-          <tbody *ngFor="let fCatch of fishingEvent.stats[active].catches">
-          <tr>
-            <td> {{ fCatch.fish_species }} </td>
-            <td> {{ fCatch.fish_details }} </td>
-            <td> {{ fCatch.lure }} </td>
-            <td> {{ fCatch.lure_details }} </td>
-          </tr>
-          </tbody>
-        </table>
-        <div>
-          <button class="btn btn-outline-primary btn-sm mr-3" (click)="editFishingMethod(active)"> Muokkaa </button>
-          <button *ngIf="statsLength > 1" class="btn btn-outline-danger btn-sm" (click)="deleteStat(fishingEvent.id, active)"> Poista </button>
+      <div class="card-body pb-0 mb-0">
+        <p class="card-text"> <span class="h5 font-weight-bold"> {{ fishingEvent.location }} </span> | {{fishingEvent.location_details }} </p>
+        <div class="d-flex justify-content-between">
+          <p class="card-text">
+            <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-clock" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm8-7A8 8 0 1 1 0 8a8 8 0 0 1 16 0z"/>
+              <path fill-rule="evenodd" d="M7.5 3a.5.5 0 0 1 .5.5v5.21l3.248 1.856a.5.5 0 0 1-.496.868l-3.5-2A.5.5 0 0 1 7 9V3.5a.5.5 0 0 1 .5-.5z"/>
+            </svg> {{ startTime }} - {{ endTime }} </p>
+          <p class="card-text">
+            <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-cloud" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd" d="M4.406 3.342A5.53 5.53 0 0 1 8 2c2.69 0 4.923 2 5.166 4.579C14.758 6.804 16 8.137 16 9.773 16 11.569 14.502 13 12.687 13H3.781C1.708 13 0 11.366 0 9.318c0-1.763 1.266-3.223 2.942-3.593.143-.863.698-1.723 1.464-2.383zm.653.757c-.757.653-1.153 1.44-1.153 2.056v.448l-.445.049C2.064 6.805 1 7.952 1 9.318 1 10.785 2.23 12 3.781 12h8.906C13.98 12 15 10.988 15 9.773c0-1.216-1.02-2.228-2.313-2.228h-.5v-.5C12.188 4.825 10.328 3 8 3a4.53 4.53 0 0 0-2.941 1.1z"/>
+            </svg> {{ fishingEvent.weather }} | {{ fishingEvent.air_temperature }}&#176;C </p>
         </div>
+        <div class="d-flex justify-content-start">
+          <p class="card-text mr-3">
+            <svg id="Capa_1" enable-background="new 0 0 512.159 512.159" height="1.5em" viewBox="0 0 512.159 512.159" width="1.5em" xmlns="http://www.w3.org/2000/svg">
+              <g>
+                <path d="m133.449 40.857c16.043 3.608 27.857 9.227 36.79 15.726 39.264-10.897 84.758-15.284 127.739-11.067-43.62-49.27-104.192-55.259-166.271-33.604-14.936 5.21-12.968 25.979 1.742 28.945z"/><path d="m69.745 311.815c29.804-26.011 63.767-31.961 100.947-17.684 34.534 13.689 91.011 29.856 142.513 38.154-3.714-5.842-3.746-5.879-3.999-6.316-13.892-24.146-44.358-86.808-27.288-147.014 10.061-35.48 34.638-64.025 73.051-84.844.314-.176.257-.144 6.491-3.555-46.873-17.735-100.133-20.301-149.371-12.379-44.559 7.128-67.8 18.369-89.625 32.793-106.114 70.047-136.442 165.033-116.884 244.762.002.008.005.015.007.023 22.925 93.362 118.772 151.82 122.841 154.263 2.285 1.372 4.908 2.14 7.847 2.14 4.203 0 30.593-.889 48.911-22.465 16.19-19.069 20.798-47.456 13.692-84.37-1.8-9.361-11.905-14.776-20.784-10.889-.248.108-25.139 10.836-55.493 9.697-36.467-1.373-65.137-18.932-85.323-52.222 5.206-9.051 16.122-25.83 32.467-40.094z"/><path d="m511.964 301.819c-13.194-85.969-50.834-156.468-117.108-195.337-34.955 19.127-22.897 12.534-25.507 13.958-31.085 16.826-50.79 39.267-58.568 66.699-13.892 48.995 12.199 102.537 24.268 123.587l16.832 26.476c50.15 4.573 102.187 1.811 146.146-17.012 5.229-2.24 8.95-3.546 11.766-7.959 1.974-3.097 2.743-6.79 2.171-10.412zm-111.689-78.66c-8.654 0-15.127-6.91-15.127-15 0-8.103 6.485-15 15.127-15 8.284 0 15 6.716 15 15s-6.716 15-15 15z"/>
+              </g>
+            </svg>
+            <span class="ml-1"> Need to implement this </span>
+          </p>
+          <p class="card-text">
+            <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-people-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd" d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-5.784 6A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216zM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z"/>
+            </svg>
+            <span class="ml-1"> {{ fishingEvent.persons }} </span>
+          </p>
+        </div>
+        <div class="card">
+          <div class="card-header gradient-bg pt-1 mt-0">
+            <ul class="nav nav-tabs card-header-tabs small">
+              <li class="nav-item" *ngFor="let stat of fishingEvent.stats; let i = index">
+                <a *ngIf="active == i" class="nav-link active text-dark font-weight-bold px-2"> {{ stat.fishing_method }} </a>
+                <a *ngIf="active !== i" class="nav-link text-white px-2" style="cursor: pointer" (click)="activateStat(i)"> {{ stat.fishing_method }} </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link text-white" style="cursor: pointer" (click)="addNewFishingEvent()">
+                  <svg width="1.48em" height="1.48em" viewBox="0 0 16 16" class="bi bi-plus-circle" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                    <path fill-rule="evenodd" d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+                  </svg>
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div class="card-body">
+            <div class="row">
+            <div class="col-4">
+              <label class="control-label small text-info mb-0" for="location"> Viehe</label>
+              <p class="small" *ngIf="lure; else defaultLure"  > {{ lure }} </p>
+              <ng-template #defaultLure>
+                <p class="small"> Ei viehettä </p>
+              </ng-template>
+            </div>
+            <div class="col">
+              <label class="control-label small text-info mb-0" for="location"> Vieheen lisätiedot</label>
+              <p class="small"> keltainen, valkoinen, musta, punainen ja kaikkea muuta mahdollista lisätietoa. Lisää tekstiä niin näkyy miten elementti käyttäytyy ja on suhteessa muuhun matskuun.</p>
+            </div>
+            </div>
+            <div class="row">
+              <div class="col">
+                <h5 class="font-weight-bold small pl-1"> Kalasaalis</h5>
+              </div>
+            </div>
+            <table class="table table-sm table-hover small">
+              <thead class="text-info">
+              <tr>
+                <th class="pl-1"> Kalalaji </th>
+                <th class="pl-1"> Paino </th>
+                <th class="pl-1"> Määrä </th>
+              </tr>
+              </thead>
+              <tbody *ngFor="let fCatch of fishingEvent.stats[active].catches">
+              <tr>
+                <td class="pl-1"> {{ fCatch.fish_species }} </td>
+                <td> {{ fCatch.fish_details }} </td>
+                <td> </td>
+              </tr>
+              </tbody>
+            </table>
+            <div>
+              <button class="btn btn-outline-gradient btn-sm mr-3" (click)="editFishingMethod(active)"> Muokkaa </button>
+              <button *ngIf="statsLength > 1" class="btn btn-outline-danger btn-sm" (click)="deleteStat(fishingEvent.id, active)"> Poista </button>
+            </div>
+          </div>
+        </div>
+
+
       </div>
+
     </div>
   </div>
+
 </div>

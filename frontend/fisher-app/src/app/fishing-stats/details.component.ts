@@ -6,11 +6,11 @@ import { FishingEvent } from '@app/_models/fishing-event.model';
 @Component({
   selector: 'app-details',
   templateUrl: './details.component.html',
-  styleUrls: ['./details.component.css']
+  styleUrls: ['./list.component.css']
 })
 export class DetailsComponent implements OnInit {
   id: string;
-  fishingEvent = new FishingEvent();
+  fishingEvent: FishingEvent;
   active = 0;
 
   constructor(private route: ActivatedRoute, private statService: FishingStatsService, private router: Router) {
@@ -22,6 +22,25 @@ export class DetailsComponent implements OnInit {
   }
 
   get statsLength() { return this.fishingEvent.stats.length; }
+
+  get startTime() {
+    if (this.fishingEvent.start_time) {
+      return this.fishingEvent.start_time.substring(0, 5);
+    }
+  }
+
+  get endTime() {
+    if (this.fishingEvent.end_time) {
+      return this.fishingEvent.end_time.substring(0, 5);
+    }
+  }
+
+  get lure() {
+    if (this.fishingEvent) {
+      return this.fishingEvent.stats[this.active].lure;
+    }
+    return null;
+  }
 
   editFishingMethod(statIndex): void {
     this.router.navigate([`methods/${statIndex}/edit`], { relativeTo: this.route, state: {data: this.fishingEvent}});
@@ -55,7 +74,7 @@ export class DetailsComponent implements OnInit {
       }
     );
   }
-  test(index) {
+  activateStat(index) {
     this.active = index;
   }
 }

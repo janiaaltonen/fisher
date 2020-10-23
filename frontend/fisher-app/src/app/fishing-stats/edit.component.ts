@@ -8,15 +8,17 @@ import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {FishingStatsService} from '@app/_services';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Catches} from '@app/_models/catches';
+import {Stats} from '@app/_models/stats';
 
 @Component({
   selector: 'app-edit',
   templateUrl: './edit.component.html',
-  styleUrls: ['./edit.component.css']
+  styleUrls: ['./list.component.css']
 })
 export class EditComponent implements OnInit {
   methodIndex: number;
-  fishingEvent = new FishingEvent();
+  fishingEvent: FishingEvent;
+  eventStat: Stats;
   form: FormGroup;
   emptyArr = [
     {
@@ -42,21 +44,25 @@ export class EditComponent implements OnInit {
     );
     // get the current fishingEvent from router state attribute
     this.fishingEvent = history.state.data;
+    this.eventStat = this.fishingEvent.stats[this.methodIndex];
     this.initForm();
   }
 
   initForm(): void {
     if (this.methodIndex > -1) {
       console.log(this.methodIndex);
-      const statObj = this.fishingEvent.stats[this.methodIndex];
       this.form = this.formBuilder.group({
-        id: [statObj.id],
-        fishing_method: [statObj.fishing_method, Validators.required],
-        catches: this.initCatches(statObj.catches)
+        id: [this.eventStat.id],
+        fishing_method: [this.eventStat.fishing_method, Validators.required],
+        lure: [this.eventStat.lure],
+        lure_details: [this.eventStat.lure_details],
+        catches: this.initCatches(this.eventStat.catches)
       });
     } else {
       this.form = this.formBuilder.group({
         fishing_method: ['', Validators.required],
+        lure: [''],
+        lure_details: [''],
         catches: this.formBuilder.array([])
       });
     }
@@ -75,15 +81,25 @@ export class EditComponent implements OnInit {
     return arr;
   }
 
+  get startTime() {
+    if (this.fishingEvent.start_time) {
+      return this.fishingEvent.start_time.substring(0, 5);
+    }
+  }
+
+  get endTime() {
+    if (this.fishingEvent.end_time) {
+      return this.fishingEvent.end_time.substring(0, 5);
+    }
+  }
+
   initCatches(catchesArr): FormArray {
     const arr = this.formBuilder.array([]);
     for (const obj of catchesArr) {
       const group = this.formBuilder.group({
         id: [obj.id],
         fish_species: [obj.fish_species, Validators.required],
-        fish_details: [obj.fish_details],
-        lure: [obj.lure],
-        lure_details: [obj.lure_details]
+        fish_details: [obj.fish_details]
       });
       arr.push(group);
     }
@@ -95,8 +111,6 @@ export class EditComponent implements OnInit {
       id: [null],
       fish_species: ['', Validators.required],
       fish_details: [''],
-      lure: [''],
-      lure_details: ['']
     });
   }
 
@@ -116,8 +130,8 @@ export class EditComponent implements OnInit {
 
   submit(): void {
     if (this.methodIndex > -1) {
-      this.updateFishingEvent();
-      this.api.updateFishingEvent(this.fishingEvent.id, this.fishingEvent).subscribe(
+      this.updateEventStat();
+      this.api.updateStat(this.fishingEvent.id, this.eventStat).subscribe(
         resp => {
           this.router.navigate([`events/details/${this.fishingEvent.id}/`]);
         }
@@ -131,20 +145,20 @@ export class EditComponent implements OnInit {
     }
   }
 
-  updateFishingEvent(): void {
+  updateEventStat(): void {
     const arr: Catches[] = [];
     for (const c of this.getCatches().controls) {
       const obj = {
         id: c.get('id').value,
         fish_species: c.get('fish_species').value,
         fish_details: c.get('fish_details').value,
-        lure: c.get('lure').value,
-        lure_details: c.get('lure_details').value
       };
       arr.push(obj);
     }
-    this.fishingEvent.stats[this.methodIndex].fishing_method = this.f.fishing_method.value;
-    this.fishingEvent.stats[this.methodIndex].catches = arr;
+    this.eventStat.fishing_method = this.f.fishing_method.value;
+    this.eventStat.lure = this.f.lure.value;
+    this.eventStat.lure_details = this.f.lure_details.value;
+    this.eventStat.catches = arr;
   }
 
   createNewStat() {
@@ -154,13 +168,13 @@ export class EditComponent implements OnInit {
         id: c.get('id').value,
         fish_species: c.get('fish_species').value,
         fish_details: c.get('fish_details').value,
-        lure: c.get('lure').value,
-        lure_details: c.get('lure_details').value
       };
       arr.push(obj);
     }
     return {
       fishing_method: this.f.fishing_method.value,
+      lure: this.f.lure.value,
+      lure_details: this.f.lure_details.value,
       catches: arr
     };
   }

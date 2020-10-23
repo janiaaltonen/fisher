@@ -64,4 +64,8 @@ export class ListComponent implements OnInit {
     );
   }
 
+  showDetails(eventId): void {
+    this.router.navigate([`details/${eventId}`], {relativeTo: this.route});
+  }
+
 }
