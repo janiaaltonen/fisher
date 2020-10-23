@@ -10,7 +10,7 @@ export class FishingStatsService {
   private baseUrl = 'http://localhost:8000';
   private httpHeaders = new HttpHeaders({'Content-type': 'application/json'});
   // quick fix to make front work with api
-  private httpHeaders2 = new HttpHeaders({'X-CSRFTOKEN': 'tTDMkfUtcYRN95h9ZvkEnslX1iraB0zTphuajwEHcJVE4Oaou587KG9ZoqqGcYv2'});
+  private httpHeaders2 = new HttpHeaders({'X-CSRFTOKEN': 'RnSAfCh36cxMBYg8cUsHDIo6M2T7m4ddekMKSoXVLjRa92QMdasHFs45LNTC9qLn'});
 
   constructor(private http: HttpClient) { }
 
@@ -44,6 +44,11 @@ export class FishingStatsService {
 
   createStat(eventId, obj): Observable<any> {
     return this.http.post(this.baseUrl + `/events/details/${eventId}/stats/create/`,
+      obj, {headers: this.httpHeaders2, observe: 'response'});
+  }
+
+  updateStat(eventId, obj): Observable<any> {
+    return this.http.put(this.baseUrl + `/events/details/${eventId}/stats/${obj.id}/`,
       obj, {headers: this.httpHeaders2, observe: 'response'});
   }
 
