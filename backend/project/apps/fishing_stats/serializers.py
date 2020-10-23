@@ -41,6 +41,38 @@ class StatsSerializer(serializers.ModelSerializer):
 
         return fishing_technique
 
+    def update(self, instance, validated_data):
+        catches_data = validated_data.pop('catches')
+        catches = list(instance.catches.all())
+        instance.fishing_method = validated_data.get('fishing_method', instance.fishing_method)
+        instance.lure = validated_data.get('lure', instance.lure)
+        instance.lure_details = validated_data.get('lure_details', instance.lure_details)
+        instance.save()
+
+        # Create new fish_catch objects if db has none and request has one or more
+        if len(catches) == 0 and len(catches_data) > 0:
+            for catch in catches_data:
+                FishCatch.objects.create(fishing_technique=instance, **catch)
+        else:
+            # get catch id from request if catch has one
+            catch_ids = [catch.get('id') for catch in catches_data if catch.get('id') is not None]
+            # delete all the catches from db which weren't in request
+            for catch in catches:
+                if catch.id not in catch_ids:
+                    catch.delete()
+            # create new catch objects from request if has no id
+            for catch in catches_data:
+                if catch.get('id') is None:
+                    FishCatch.objects.create(fishing_technique=instance, **catch)
+                # update rest of the catches
+                else:
+                    catch_instance = catches.pop(0)
+                    catch_instance.id = catch.get('id', catch_instance.id)
+                    catch_instance.fish_species = catch.get('fish_species', catch_instance.fish_species)
+                    catch_instance.fish_details = catch.get('fish_details', catch_instance.fish_details)
+                    catch_instance.save()
+        return instance
+
 
 class EventSerializer(serializers.ModelSerializer):
     weather = serializers.CharField(source='get_weather_display')

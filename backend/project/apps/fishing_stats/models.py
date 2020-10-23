@@ -88,6 +88,10 @@ class FishingTechnique(models.Model):
         name = '(' + str(self.fishing_event) + ') ' + self.fishing_method
         return name
 
+    def get_technique_instance(self, pk):
+        instance = FishingTechnique.objects.get(pk=pk)
+        return instance
+
     def delete_technique(self, pk):
         try:
             instance = FishingTechnique.objects.get(pk=pk)

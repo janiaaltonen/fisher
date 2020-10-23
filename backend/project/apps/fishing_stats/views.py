@@ -100,6 +100,7 @@ class EventDetails(mixins.RetrieveModelMixin,
 
 class StatsDetails(mixins.DestroyModelMixin,
                    mixins.CreateModelMixin,
+                   mixins.UpdateModelMixin,
                    generics.GenericAPIView):
 
     serializer_class = StatsSerializer
@@ -111,6 +112,16 @@ class StatsDetails(mixins.DestroyModelMixin,
         if serializer.is_valid():
             serializer.save(event_id=event_id)
         return Response(serializer.data, status.HTTP_201_CREATED)
+
+    def put(self, request, **kwargs):
+        stats_id = kwargs['stats_id']
+        data = request.data
+        ft = FishingTechnique()
+        instance = ft.get_technique_instance(stats_id)
+        serializer = self.serializer_class(instance, data=data, partial=True)
+        serializer.is_valid()
+        serializer.save()
+        return Response(serializer.data, status.HTTP_200_OK)
 
     def delete(self, request, **kwargs):
         stats_id = kwargs['stats_id']
