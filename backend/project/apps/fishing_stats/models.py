@@ -106,6 +106,8 @@ class FishCatch(models.Model):
     PERCH = 'Perch'
     PIKE = 'Pike'
     ROACH = 'Roach'
+    SALMON = 'Salmon'
+    TROUT = 'Trout'
     WHITE_FISH = 'White fish'
     ZANDER = 'Zander'
     DEFAULT = 'Default'
@@ -115,12 +117,15 @@ class FishCatch(models.Model):
         (PERCH, 'Ahven'),
         (PIKE, 'Hauki'),
         (ROACH, 'Särki'),
+        (SALMON, 'Lohi'),
+        (TROUT, 'Taimen'),
         (WHITE_FISH, 'Siika'),
         (ZANDER, 'Kuha'),
         (DEFAULT, 'Muu'),
     ]
     fish_species = models.CharField(max_length=20, choices=FISH_CHOICES, default=None, null=True, blank=True)
-    fish_details = models.TextField(default=None, null=True, blank=True)
+    weight = models.FloatField(default=None, null=True, blank=True)
+    length = models.FloatField(default=None, null=True, blank=True)
     fishing_technique = models.ForeignKey(FishingTechnique, related_name='catches', on_delete=models.CASCADE)
 
     def delete_catch(self, pk):

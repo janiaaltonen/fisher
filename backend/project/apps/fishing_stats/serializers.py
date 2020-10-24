@@ -11,7 +11,7 @@ class CatchSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = FishCatch
-        fields = ['id', 'fish_species', 'fish_details']
+        fields = ['id', 'fish_species', 'weight', 'length']
 
     def to_internal_value(self, data):
         return data
@@ -69,7 +69,8 @@ class StatsSerializer(serializers.ModelSerializer):
                     catch_instance = catches.pop(0)
                     catch_instance.id = catch.get('id', catch_instance.id)
                     catch_instance.fish_species = catch.get('fish_species', catch_instance.fish_species)
-                    catch_instance.fish_details = catch.get('fish_details', catch_instance.fish_details)
+                    catch_instance.weight = catch.get('weight', catch_instance.weight)
+                    catch_instance.length = catch.get('length', catch_instance.length)
                     catch_instance.save()
         return instance
 
@@ -173,7 +174,8 @@ class FullEventSerializer(serializers.ModelSerializer):
                         fish_catch = fish_catches.pop(0)
                         fish_catch.id = catch.get('id', fish_catch.id)
                         fish_catch.fish_species = catch.get('fish_species', fish_catch.fish_species)
-                        fish_catch.fish_details = catch.get('fish_details', fish_catch.fish_details)
+                        fish_catch.weight = catch.get('weight', fish_catch.weight)
+                        fish_catch.length = catch.get('length', fish_catch.length)
                         fish_catch.save()
 
         return instance
