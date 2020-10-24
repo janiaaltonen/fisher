@@ -13,7 +13,7 @@ import {Stats} from '@app/_models/stats';
 @Component({
   selector: 'app-edit',
   templateUrl: './edit.component.html',
-  styleUrls: ['./list.component.css']
+  styleUrls: ['./list.component.css', './add.component.css']
 })
 export class EditComponent implements OnInit {
   methodIndex: number;
@@ -120,8 +120,19 @@ export class EditComponent implements OnInit {
 
   addCatch() {
     const control = this.getCatches();
-    console.log(control);
     control.push(this.initNewCatch());
+  }
+
+  copyToNewCatch() {
+    const newCatch = this.initNewCatch();
+    const control = this.getCatches();
+    const lastControl = control.controls[control.length - 1];
+    // copy values from last catch to new catch except id
+    newCatch.patchValue({
+      fish_species: lastControl.get('fish_species').value,
+      fish_details: lastControl.get('fish_details').value
+    });
+    control.push(newCatch);
   }
 
   removeCatch(catchIndex): void {
@@ -129,6 +140,7 @@ export class EditComponent implements OnInit {
   }
 
   submit(): void {
+    console.log(this.form.dirty);
     if (this.methodIndex > -1) {
       this.updateEventStat();
       this.api.updateStat(this.fishingEvent.id, this.eventStat).subscribe(
