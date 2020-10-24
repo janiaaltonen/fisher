@@ -23,6 +23,13 @@ export class DetailsComponent implements OnInit {
 
   get statsLength() { return this.fishingEvent.stats.length; }
 
+  get date() {
+    if (this.fishingEvent) {
+      return this.fishingEvent.date;
+    }
+    return null;
+  }
+
   get startTime() {
     if (this.fishingEvent.start_time) {
       return this.fishingEvent.start_time.substring(0, 5);
@@ -38,6 +45,20 @@ export class DetailsComponent implements OnInit {
   get lure() {
     if (this.fishingEvent) {
       return this.fishingEvent.stats[this.active].lure;
+    }
+    return null;
+  }
+
+  get lureDetails() {
+    if (this.fishingEvent) {
+      return this.fishingEvent.stats[this.active].lure_details;
+    }
+    return null;
+  }
+
+  get catches() {
+    if (this.fishingEvent) {
+      return this.fishingEvent.stats[this.active].catches;
     }
     return null;
   }

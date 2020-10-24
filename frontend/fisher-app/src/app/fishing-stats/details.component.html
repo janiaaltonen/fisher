@@ -2,7 +2,7 @@
   <div class="row justify-content-md-center">
     <div class="card col-md-8 p-1 m-1">
       <div class="card-header gradient-bg">
-        <h4 class="card-title font-weight-bold  mt-1 text-white"> {{ fishingEvent.date }} </h4>
+        <h4 class="card-title font-weight-bold  mt-1 text-white"> {{ date }} </h4>
       </div>
       <div class="card-body pb-0 mb-0">
         <p class="card-text"> <span class="h5 font-weight-bold"> {{ fishingEvent.location }} </span> | {{fishingEvent.location_details }} </p>
@@ -61,7 +61,7 @@
             </div>
             <div class="col">
               <label class="control-label small text-info mb-0" for="location"> Vieheen lisätiedot</label>
-              <p class="small"> keltainen, valkoinen, musta, punainen ja kaikkea muuta mahdollista lisätietoa. Lisää tekstiä niin näkyy miten elementti käyttäytyy ja on suhteessa muuhun matskuun.</p>
+              <p class="small"> {{ lureDetails}}</p>
             </div>
             </div>
             <div class="row">
@@ -69,22 +69,25 @@
                 <h5 class="font-weight-bold small pl-1"> Kalasaalis</h5>
               </div>
             </div>
-            <table class="table table-sm table-hover small">
+            <table class="table table-sm table-hover small" *ngIf="catches.length > 0; else noCatches">
               <thead class="text-info">
               <tr>
                 <th class="pl-1"> Kalalaji </th>
-                <th class="pl-1"> Paino </th>
-                <th class="pl-1"> Määrä </th>
+                <th class="pl-1"> Paino (kg)</th>
+                <th class="pl-1"> Pituus (cm)</th>
               </tr>
               </thead>
-              <tbody *ngFor="let fCatch of fishingEvent.stats[active].catches">
+              <tbody *ngFor="let fCatch of catches">
               <tr>
                 <td class="pl-1"> {{ fCatch.fish_species }} </td>
-                <td> {{ fCatch.fish_details }} </td>
-                <td> </td>
+                <td> {{ fCatch.weight }} </td>
+                <td> {{ fCatch.length }} </td>
               </tr>
               </tbody>
             </table>
+            <ng-template #noCatches>
+              <p class="small font-weight-bold text-info pl-1"> Ei saalista </p>
+            </ng-template>
             <div>
               <button class="btn btn-outline-gradient btn-sm mr-3" (click)="editFishingMethod(active)"> Muokkaa </button>
               <button *ngIf="statsLength > 1" class="btn btn-outline-danger btn-sm" (click)="deleteStat(fishingEvent.id, active)"> Poista </button>

@@ -63,7 +63,8 @@ export class AddComponent implements OnInit {
   initCatches(): FormGroup {
     return this.formBuilder.group({
         fish_species: ['', Validators.required],
-        fish_details: [''],
+        weight: [''],
+        length: ['']
     });
   }
 
@@ -111,7 +112,8 @@ export class AddComponent implements OnInit {
       for (const catchControl of this.getCatches(statControl).controls) {
         const catchObj = {
           fish_species: catchControl.get('fish_species').value,
-          fish_details: catchControl.get('fish_details').value,
+          weight: catchControl.get('weight').value,
+          length: catchControl.get('length').value
         };
         catchesArr.push(catchObj);
       }

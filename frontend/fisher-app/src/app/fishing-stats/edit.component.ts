@@ -34,7 +34,6 @@ export class EditComponent implements OnInit {
 
   ngOnInit(): void {
     this.methodIndex = this.route.snapshot.params.methodIndex;
-    console.log(this.methodIndex);
     this.api.getFormOptions().subscribe(
       data => {
         this.methods = data.fishing_methods;
@@ -50,7 +49,6 @@ export class EditComponent implements OnInit {
 
   initForm(): void {
     if (this.methodIndex > -1) {
-      console.log(this.methodIndex);
       this.form = this.formBuilder.group({
         id: [this.eventStat.id],
         fishing_method: [this.eventStat.fishing_method, Validators.required],
@@ -81,6 +79,13 @@ export class EditComponent implements OnInit {
     return arr;
   }
 
+  get date() {
+    if (this.fishingEvent) {
+      return this.fishingEvent.date;
+    }
+    return null;
+  }
+
   get startTime() {
     if (this.fishingEvent.start_time) {
       return this.fishingEvent.start_time.substring(0, 5);
@@ -99,7 +104,8 @@ export class EditComponent implements OnInit {
       const group = this.formBuilder.group({
         id: [obj.id],
         fish_species: [obj.fish_species, Validators.required],
-        fish_details: [obj.fish_details]
+        weight: [obj.weight],
+        length: [obj.length]
       });
       arr.push(group);
     }
@@ -110,7 +116,8 @@ export class EditComponent implements OnInit {
     return this.formBuilder.group({
       id: [null],
       fish_species: ['', Validators.required],
-      fish_details: [''],
+      weight: [null],
+      length: [null]
     });
   }
 
@@ -130,7 +137,8 @@ export class EditComponent implements OnInit {
     // copy values from last catch to new catch except id
     newCatch.patchValue({
       fish_species: lastControl.get('fish_species').value,
-      fish_details: lastControl.get('fish_details').value
+      weight: lastControl.get('weight').value,
+      length: lastControl.get('length').value
     });
     control.push(newCatch);
   }
@@ -140,7 +148,8 @@ export class EditComponent implements OnInit {
   }
 
   submit(): void {
-    console.log(this.form.dirty);
+    // weight and length needs to be checked that they are numbers
+    // console.log(this.form.dirty);
     if (this.methodIndex > -1) {
       this.updateEventStat();
       this.api.updateStat(this.fishingEvent.id, this.eventStat).subscribe(
@@ -160,12 +169,17 @@ export class EditComponent implements OnInit {
   updateEventStat(): void {
     const arr: Catches[] = [];
     for (const c of this.getCatches().controls) {
-      const obj = {
-        id: c.get('id').value,
-        fish_species: c.get('fish_species').value,
-        fish_details: c.get('fish_details').value,
-      };
-      arr.push(obj);
+      const stringWeight = String(c.get('weight').value);
+      const numWeight = this.convertToNumber(stringWeight);
+      if (!Number.isNaN(numWeight)) {
+        const obj = {
+          id: c.get('id').value,
+          fish_species: c.get('fish_species').value,
+          weight: numWeight,
+          length: c.get('length').value,
+        };
+        arr.push(obj);
+      }
     }
     this.eventStat.fishing_method = this.f.fishing_method.value;
     this.eventStat.lure = this.f.lure.value;
@@ -179,7 +193,8 @@ export class EditComponent implements OnInit {
       const obj = {
         id: c.get('id').value,
         fish_species: c.get('fish_species').value,
-        fish_details: c.get('fish_details').value,
+        weight: c.get('weight').value,
+        length: c.get('length').value
       };
       arr.push(obj);
     }
@@ -189,5 +204,17 @@ export class EditComponent implements OnInit {
       lure_details: this.f.lure_details.value,
       catches: arr
     };
+  }
+
+  convertToNumber(inputString): number {
+    let stringNum: string;
+    if (String(inputString)) {
+      if (inputString.indexOf(',') > -1) {
+        stringNum = inputString.replace(',', '.');
+      }
+    } else {
+      stringNum = '';
+    }
+    return Number(stringNum);
   }
 }

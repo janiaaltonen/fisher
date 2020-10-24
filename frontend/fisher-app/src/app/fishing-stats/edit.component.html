@@ -102,10 +102,10 @@
                           </select>
                         </td>
                         <td class="ml-0 pl-0">
-                          <input class="form-control form-control-sm" type="text" formControlName="fish_details" [id]="'fish_details' + i"/>
+                          <input class="form-control form-control-sm" type="text" formControlName="weight" [id]="'weight' + i"/>
                         </td>
                         <td class="ml-0 pl-0">
-                          <input class="form-control form-control-sm" type="text" formControlName="fish_details" [id]="'fish_details' + i"/>
+                          <input class="form-control form-control-sm" type="text" formControlName="length" [id]="'length' + i"/>
                         </td>
                         <td>
                           <button type="button" class="close mt-1" aria-label="Close" (click)="removeCatch(i)">
@@ -121,7 +121,7 @@
                   <button class="btn btn-outline-gradient btn-sm col-sm-6" id="addCatchBtn" (click)="addCatch()"> Lisää uusi</button>
                 </div>
                 <div class="form-group col-6">
-                  <button class="btn btn-outline-gradient btn-sm col-sm-6" id="ddd" (click)="copyToNewCatch()"> Kopioi viimeisin </button>
+                  <button class="btn btn-outline-gradient btn-sm col-sm-6" id="ddd" [disabled]="getCatches().length === 0" (click)="copyToNewCatch()"> Kopioi viimeisin </button>
                 </div>
                 </div>
               </div>
