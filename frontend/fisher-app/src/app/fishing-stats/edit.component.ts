@@ -4,7 +4,7 @@
 
 import {Component, OnInit} from '@angular/core';
 import {FishingEvent} from '@app/_models/fishing-event.model';
-import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {AbstractControl, FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {FishingStatsService} from '@app/_services';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Catches} from '@app/_models/catches';
@@ -148,10 +148,16 @@ export class EditComponent implements OnInit {
   }
 
   submit(): void {
+    this.checkControls(this.getCatches().controls);
+    if (this.form.invalid) {
+      return;
+    }
     // weight and length needs to be checked that they are numbers
     // console.log(this.form.dirty);
     if (this.methodIndex > -1) {
+      console.log(this.f);
       this.updateEventStat();
+      console.log(this.eventStat);
       this.api.updateStat(this.fishingEvent.id, this.eventStat).subscribe(
         resp => {
           this.router.navigate([`events/details/${this.fishingEvent.id}/`]);
@@ -169,17 +175,13 @@ export class EditComponent implements OnInit {
   updateEventStat(): void {
     const arr: Catches[] = [];
     for (const c of this.getCatches().controls) {
-      const stringWeight = String(c.get('weight').value);
-      const numWeight = this.convertToNumber(stringWeight);
-      if (!Number.isNaN(numWeight)) {
-        const obj = {
-          id: c.get('id').value,
-          fish_species: c.get('fish_species').value,
-          weight: numWeight,
-          length: c.get('length').value,
-        };
-        arr.push(obj);
-      }
+      const obj = {
+        id: c.get('id').value,
+        fish_species: c.get('fish_species').value,
+        weight: c.get('weight').value,
+        length: c.get('length').value,
+      };
+      arr.push(obj);
     }
     this.eventStat.fishing_method = this.f.fishing_method.value;
     this.eventStat.lure = this.f.lure.value;
@@ -206,15 +208,60 @@ export class EditComponent implements OnInit {
     };
   }
 
-  convertToNumber(inputString): number {
-    let stringNum: string;
-    if (String(inputString)) {
-      if (inputString.indexOf(',') > -1) {
-        stringNum = inputString.replace(',', '.');
+  checkControls(controls: AbstractControl[]): void {
+    /**
+     * this implementation is quite ugly. Make it better when have time and go through this with more time
+     */
+    let sWeight: string;
+    let sLength: string;
+    controls.filter((control) => {
+      if (control.get('weight').value) {
+        sWeight = String(control.get('weight').value);
+        if (sWeight.indexOf(',') > -1) {
+          sWeight = sWeight.replace(',', '.');
+          if (!Number.isNaN(Number(sWeight))) {
+            control.patchValue( {
+              weight: sWeight
+            });
+          } else {
+            control.setErrors({
+              incorrect: true
+            });
+          }
+        } else if (Number.isNaN(Number(sWeight))){
+          console.log('isNan');
+          control.setErrors({
+            incorrect: true
+          });
+        }
+      } else {
+        control.patchValue({
+          weight: null
+        });
       }
-    } else {
-      stringNum = '';
-    }
-    return Number(stringNum);
+      if (control.get('length').value) {
+        sLength = String(control.get('length').value);
+        if (sLength.indexOf(',') > -1) {
+          sLength = sLength.replace(',', '.');
+          if (!Number.isNaN(Number(sLength))) {
+            control.patchValue({
+              length: sLength
+            });
+          } else {
+            control.setErrors({
+              incorrect: true
+            });
+          }
+        } else if (Number.isNaN(Number(sLength))) {
+          control.setErrors({
+            incorrect: true
+          });
+        }
+      } else {
+        control.patchValue({
+          length: null
+        });
+      }
+    });
   }
 }
