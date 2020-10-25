@@ -8,36 +8,36 @@
         <form [formGroup]="form">
           <div class="form-row">
             <div class="form-group col-md-6 required">
-              <label class="control-label col-form-label-sm mb-0" for="location"> Sijainti</label>
+              <label class="control-label mb-1 small text-info" for="location"> Sijainti</label>
               <input class="form-control form-control-sm" type="text" formControlName="location" [ngClass]="{ 'is-invalid': submitted && f.location.errors }">
               <div *ngIf="submitted && f.location.errors" class="invalid-feedback">
                 <div *ngIf="f.location.errors.required">Location is required</div>
               </div>
             </div>
             <div class="form-group col-md-6">
-              <label class="control-label col-form-label-sm mb-0" for="location"> Sijainnin lisätiedot</label>
-              <input class="form-control form-control-sm" type="text" formControlName="location_details">
+              <label class="control-label mb-1 small text-info" for="location_details"> Sijainnin lisätiedot</label>
+              <textarea class="form-control form-control-sm" id="location_details" formControlName="location_details" rows="2" placeholder="Paikan koordinaatit tai kuvaus paikasta, esim. väylän itäviitan kohdalla oleva pakka"></textarea>
             </div>
           </div>
           <div class="form-row">
             <div class="form-group col-md-6 required">
-              <label class="control-label col-form-label-sm mb-0" for="location_details"> Päivämäärä</label>
+              <label class="control-label mb-1 small text-info" for="location_details"> Päivämäärä</label>
               <input class="form-control form-control-sm" type="date" formControlName="date" [ngClass]="{ 'is-invalid': submitted && f.date.errors }">
               <div *ngIf="submitted && f.date.errors" class="invalid-feedback">
                 <div *ngIf="f.date.errors.required">Date is required</div>
               </div>
             </div>
             <div class="form-group col-md-2">
-              <label class="control-label col-form-label-sm mb-0" for="start_time"> Alkuaika</label>
+              <label class="control-label mb-1 small text-info" for="start_time"> Alkuaika</label>
               <input class="form-control form-control-sm" type="time" formControlName="start_time">
             </div>
             <div class="form-group col-md-2">
-              <label class="control-label col-form-label-sm mb-0" for="end_time"> Loppuaika</label>
+              <label class="control-label mb-1 small text-info" for="end_time"> Loppuaika</label>
               <input class="form-control form-control-sm" type="time" formControlName="end_time">
             </div>
           </div>
           <div class="form-row">
-            <legend class="col-form-label form-control-sm"> Sää </legend>
+            <legend class="control-label mb-1 small text-info pl-1"> Sää </legend>
             <div class="form-check form-check-inline ml-2">
               <input class="form-check-input" type="radio" id="inlineRadio1" value="sunny" formControlName="weather">
               <label class="form-check-label col-form-label-sm" for="inlineRadio1">Aurinkoinen</label>
@@ -61,11 +61,11 @@
           </div>
           <div class="form-row mt-3">
             <div class="form-group col-md-3">
-              <label class="control-label col-form-label-sm mb-0" for="air_temperature"> Ilman lämpötila</label>
+              <label class="control-label mb-1 small text-info" for="air_temperature"> Ilman lämpötila</label>
               <input class="form-control form-control-sm" type="number" formControlName="air_temperature">
             </div>
             <div class="form-group col-md-3 required">
-              <label class="control-label col-form-label-sm mb-0" for="persons"> Kalastajien lkm</label>
+              <label class="control-label mb-1 small text-info" for="persons"> Kalastajien lkm</label>
               <input class="form-control form-control-sm" type="number" min="1" formControlName="persons" [ngClass]="{ 'is-invalid': submitted && f.persons.errors }">
               <div *ngIf="submitted && f.persons.errors" class="invalid-feedback">
                 <div *ngIf="f.persons.errors.required">Persons is required</div>
@@ -91,7 +91,7 @@
               <div class="card-body">
                 <div class="form row">
                   <div class="form-group required col-md-4">
-                    <label class="control-label col-form-label-sm mb-0" [attr.for]="'fishing_method' + i"> Kalastusmuoto</label>
+                    <label class="control-label mb-1 small text-info" [attr.for]="'fishing_method' + i"> Kalastusmuoto</label>
                     <select  class="custom-select custom-select-sm" formControlName="fishing_method" [id]="'fishing_method' + i" [ngClass]="{ 'is-invalid': submitted && stat.get('fishing_method').errors }">
                       <option *ngFor="let m of methods; let k=index" [value]="methods[k].key"> {{ methods[k].value }} </option>
                     </select>
@@ -100,14 +100,14 @@
                     </div>
                   </div>
                   <div class="form-group col-md-4">
-                    <label class="control-label col-form-label-sm mb-0" [attr.for]="'lure' + i"> Viehe</label>
+                    <label class="control-label mb-1 small text-info" [attr.for]="'lure' + i"> Viehe</label>
                     <select  class="custom-select custom-select-sm" formControlName="lure" [id]="'lure' + i" [ngClass]="{ 'is-invalid': submitted && stat.get('lure').errors }">
                       <<option *ngFor="let lure of lures; let k=index" [value]="lures[k].key"> {{ lures[k].value }} </option>
                     </select>
                   </div>
                   <div class="form-group col-md-4">
-                    <label class="control-label col-form-label-sm mb-0" [attr.for]="'lure_details' + i"> Vieheen lisätiedot</label>
-                    <input class="form-control form-control-sm" type="text" formControlName="lure_details" placeholder="esim. vieheen merkki, malli tai väri">
+                    <label class="control-label mb-1 small text-info" [attr.for]="'lure_details' + i"> Vieheen lisätiedot</label>
+                    <textarea class="form-control form-control-sm" id="exampleFormControlTextarea1" formControlName="lure_details" rows="2" placeholder="esim. vieheen merkki, malli, väri tai värikoodi"></textarea>
                   </div>
                 </div>
                 <div formArrayName="catches">
