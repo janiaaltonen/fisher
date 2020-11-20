@@ -54,7 +54,7 @@ class JWTAuthentication(BaseAuthentication):
         User = get_user_model()
         refresh_token = request.COOKIES.get('refresh_token')
         if refresh_token is None:
-            raise exceptions.AuthenticationFailed()
+            raise exceptions.AuthenticationFailed('Refresh credentials were not provided')
         try:
             payload = jwt.decode(
                 refresh_token, security.SECRET_KEY, algorithms=['HS256']
