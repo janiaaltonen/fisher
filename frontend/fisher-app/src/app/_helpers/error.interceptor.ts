@@ -19,8 +19,12 @@ export class ErrorInterceptor implements HttpInterceptor {
     return next.handle(request).pipe(
       catchError(err => {
         if (err instanceof HttpErrorResponse) {
+          // obtain new access token in case the old was expired and then dropped by browser
           if (err.status === 403 && err.error.detail === 'Access credentials were not provided') {
             return this.handleAuthTokenError(request, next);
+          } // logout user and redirect to login page in case refresh token were expired and dropped by browser
+          else if (err.status === 403 && err.error.detail === 'Refresh credentials were not provided') {
+            this.auth.logout();
           }
         }
         return throwError(err);
