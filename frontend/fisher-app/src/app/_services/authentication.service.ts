@@ -43,4 +43,8 @@ export class AuthenticationService {
     const body = null;
     return this.http.post(this.baseUrl + '/refresh', body);
   }
+
+  signUp(formData): Observable<any> {
+    return this.http.post(this.baseUrl + '/signup', formData);
+  }
 }

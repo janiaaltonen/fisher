@@ -1,1 +1,25 @@
-<p>sign-up works!</p>
+<div class="container mt-5">
+  <div class="row justify-content-center">
+      <h3 class="mt-0"> Create Fisher account </h3>
+  </div>
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    <div class="row justify-content-center mt-3">
+      <div class="form-group col-md-6 required mt-2">
+        <label class="control-label mb-1 small text-info mt-2" for="username"> Käyttäjätunnus</label>
+        <input class="form-control form-control-sm" type="text" formControlName="username" id="username">
+        <label class="control-label mb-1 small text-info mt-4" for="email"> Sähköposti</label>
+        <input class="form-control form-control-sm " type="email" formControlName="email" id="email">
+        <label class="control-label mb-1 small text-info mt-4" for="password1"> Salasana</label>
+        <input class="form-control form-control-sm" type="password" formControlName="password1" id="password1">
+        <span class="control-label small pl-0 text-secondary"> {{ pswInfoText }} </span>
+        <label class="control-label mb-1 small text-info mt-4" for="password2"> Salasana uudelleen</label>
+        <input class="form-control form-control-sm" type="password" formControlName="password2" id="password2">
+      </div>
+    </div>
+    <div class="row justify-content-center mt-3">
+      <div class="form-group col-md-6 required mt-3">
+        <button class=" btn btn-info btn-block md-6"> Luo tili </button>
+      </div>
+    </div>
+  </form>
+</div>
