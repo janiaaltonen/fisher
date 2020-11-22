@@ -26,6 +26,9 @@ export class ErrorInterceptor implements HttpInterceptor {
           else if (err.status === 403 && err.error.detail === 'Refresh credentials were not provided') {
             this.auth.logout();
           }
+          else if (err.status === 403) {
+            this.auth.logout();
+          }
         }
         return throwError(err);
       }));
