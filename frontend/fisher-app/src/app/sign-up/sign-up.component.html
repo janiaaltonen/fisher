@@ -4,21 +4,48 @@
   </div>
   <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
     <div class="row justify-content-center mt-3">
-      <div class="form-group col-md-6 required mt-2">
-        <label class="control-label mb-1 small text-info mt-2" for="username"> Käyttäjätunnus</label>
-        <input class="form-control form-control-sm" type="text" formControlName="username" id="username">
-        <label class="control-label mb-1 small text-info mt-4" for="email"> Sähköposti</label>
-        <input class="form-control form-control-sm " type="email" formControlName="email" id="email">
-        <label class="control-label mb-1 small text-info mt-4" for="password1"> Salasana</label>
-        <input class="form-control form-control-sm" type="password" formControlName="password1" id="password1">
-        <span class="control-label small pl-0 text-secondary"> {{ pswInfoText }} </span>
-        <label class="control-label mb-1 small text-info mt-4" for="password2"> Salasana uudelleen</label>
-        <input class="form-control form-control-sm" type="password" formControlName="password2" id="password2">
+      <div class="form-group col-md-6">
+        <div class="form-group required">
+          <label class="control-label mb-1 small text-info" for="username"> Käyttäjätunnus</label>
+          <input class="form-control form-control-sm" type="text" formControlName="username" id="username" [ngClass]="{ 'is-invalid': submitted && controls.username.errors}">
+          <div *ngIf="submitted && controls.username.errors" class="invalid-feedback">
+            <div *ngIf="controls.username.errors.required"> Käyttäjätunnus puuttuu</div>
+          </div>
+        </div>
+        <div class="form-group required">
+          <label class="control-label mb-1 small text-info" for="email" > Sähköposti</label>
+          <input class="form-control form-control-sm " type="email" formControlName="email" id="email" [ngClass]="{ 'is-invalid': submitted && controls.email.errors}">
+          <div *ngIf="submitted && controls.email.errors" class="invalid-feedback">
+            <div *ngIf="controls.email.errors.required"> Sähköpostiosoite puuttuu</div>
+            <div *ngIf="controls.email.errors.pattern"> Sähköpostiosoite on virheellinen</div>
+          </div>
+        </div>
+        <div class="form-group required">
+          <label class="control-label mb-1 small text-info" for="password1"> Salasana</label>
+          <input class="form-control form-control-sm" type="password" formControlName="password1" id="password1" [ngClass]="{ 'is-invalid': submitted && controls.password1.errors}">
+          <span class="control-label small pl-0 text-secondary"> {{ pswInfoText }} </span>
+          <div *ngIf="submitted && controls.password1.errors" class="invalid-feedback">
+            <div *ngIf="controls.password1.errors.required"> Salasana puuttuu </div>
+            <div *ngIf="controls.password1.errors.minlength"> Salasanassa pitää olla vähintään 8 merkkiä </div>
+            <div *ngIf="controls.password1.errors.canNotMatch"> Salasana ei voi olla sama kuin käyttäjätunnus </div>
+          </div>
+        </div>
+        <div class="form-group required">
+          <label class="control-label mb-1 small text-info" for="password2"> Salasana uudelleen</label>
+          <input class="form-control form-control-sm" type="password" formControlName="password2" id="password2" [ngClass]="{ 'is-invalid': submitted && controls.password2.errors}">
+          <div *ngIf="submitted && controls.email.errors" class="invalid-feedback">
+            <div *ngIf="controls.password2.errors.required"> Salasanan vahvistus puuttuu </div>
+            <div *ngIf="controls.password2.errors.mustMatch"> Salasanojen tulee olla samat </div>
+          </div>
+        </div>
       </div>
     </div>
     <div class="row justify-content-center mt-3">
-      <div class="form-group col-md-6 required mt-3">
-        <button class=" btn btn-info btn-block md-6"> Luo tili </button>
+      <div class="form-group col-md-6">
+        <button [disabled]="loading" class=" btn btn-info btn-block md-6">
+          <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+          Luo tili
+        </button>
       </div>
     </div>
   </form>

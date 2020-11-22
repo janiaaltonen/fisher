@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {AuthenticationService} from '../_services';
+import { CustomValidators } from '@app/_helpers';
 
 @Component({
   selector: 'app-sign-up',
@@ -9,8 +10,10 @@ import {AuthenticationService} from '../_services';
 })
 export class SignUpComponent implements OnInit {
 
-  pswInfoText = 'Salasanan tulee olla vähintään 8 merkkiä pitkä. Salasana ei voi olla sama kuin käyttäjätunnus.';
+  pswInfoText = 'Salasanan tulee olla vähintään 8 merkkiä pitkä. Salasana ei voi olla sama tai liian samanlainen kuin käyttäjätunnus.';
   loginForm: FormGroup;
+  submitted = false;
+  loading = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -21,17 +24,30 @@ export class SignUpComponent implements OnInit {
   }
 
   initForm(): void {
+    // pattern for email '^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$'
     this.loginForm = this.formBuilder.group({
-      username: [''],
-      password1: ['', ],
-      password2: ['', ],
-      email: ['', ]
+      username: ['', Validators.required],
+      password1: ['', [
+        Validators.required,
+        Validators.minLength(8)]],
+      password2: ['', Validators.required],
+      email: ['', [
+        Validators.required,
+        Validators.pattern('^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$')]]
+    }, {
+      validators: [CustomValidators.MustMatch('password1', 'password2'),
+        CustomValidators.CanNotMatch('username', 'password1')]
     });
   }
 
   get controls() { return this.loginForm.controls; }
 
   onSubmit(): void {
+    this.submitted = true;
+    if (this.loginForm.invalid) {
+      return;
+    }
+    this.loading = true;
     // implement check for password, validators etc.
     // include email also when support ready in backend
     const formData: any = new FormData();
