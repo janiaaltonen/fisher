@@ -11,7 +11,7 @@ const routes: Routes = [
   { path: '', component: AppComponent, canActivate: [AuthGuard] },
   { path: 'login', component: LoginComponent },
   { path: 'events', loadChildren: fishingStatsModule, canActivate: [AuthGuard] },
-  { path: 'sign-up', component: SignUpComponent }
+  { path: 'signup', component: SignUpComponent }
 ];
 
 @NgModule({
