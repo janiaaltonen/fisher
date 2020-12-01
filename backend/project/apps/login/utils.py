@@ -4,6 +4,7 @@ from django.conf import settings
 from rest_framework.response import Response
 from rest_framework import exceptions
 from django.contrib.auth import authenticate
+from django.contrib.auth.models import User
 import datetime
 
 
@@ -61,3 +62,19 @@ class CookieResponse:
 
     def set_data(self, data):
         self.response.data = data
+
+
+class Availability:
+
+    # check if requested username already exists
+    @staticmethod
+    def username_exists(username):
+        if User.objects.filter(username=username).exists():
+            return True
+        return False
+
+    @staticmethod
+    def email_exists(email):
+        if User.objects.filter(email=email).exists():
+            return True
+        return False

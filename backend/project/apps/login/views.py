@@ -1,13 +1,15 @@
 from rest_framework.views import APIView
 from django.contrib.auth import authenticate
 from rest_framework.response import Response
-from rest_framework import exceptions, permissions, authentication
-from .utils import CookieResponse
+from rest_framework import exceptions, permissions, authentication, status
+from .utils import CookieResponse, Availability
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect
 import datetime
 from django.contrib.auth.forms import UserCreationForm
 from .authentication import JWTAuthentication
+from .forms import SignUpForm
+from django.urls import resolve
 
 
 class AuthView(APIView):
@@ -50,7 +52,7 @@ class SignUp(APIView):
     permission_classes = [permissions.AllowAny]
 
     def post(self, request):
-        form = UserCreationForm(request.POST)
+        form = SignUpForm(request.POST)
         if form.is_valid():
             form.save()
             username = form.cleaned_data.get('username')
@@ -61,9 +63,41 @@ class SignUp(APIView):
             cr.set_data({'detail': 'User created and login successful'})
             return cr.response
         else:
-            # form = UserCreationForm()
-            # print(form.errors.get_json_data(escape_html=True)) escaped ver.
-            return Response(form.errors.as_json())
+            raw_errors = form.errors.get_json_data(escape_html=True)
+            # pop "code" key-values from JSON
+            for key in raw_errors:
+                for obj in raw_errors[key]:
+                    obj.pop('code')
+            # Use custom resp status instead of default 200
+            return Response(raw_errors, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
 
 
+    def get(self, request, **kwargs):
+        username = kwargs['username']
+        # email = kwargs['email']
+        a = Availability()
+        if username is not None and a.username_exists(username):
+            msg = {"available": False}
+            return Response(msg)
+        return Response({"available": True})
+
+
+class SignUpCheck(APIView):
+
+    authentication_classes = []
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request):
+        url = request.path
+        # split url and convert list to string using map
+        resource = ''.join(map(str, str(url).split("/")[-2:-1]))
+        if resource == 'username' and Availability.username_exists(request.POST[resource]):
+            msg = {"available": False}
+            return Response(msg)
+        elif resource == 'email' and Availability.email_exists(request.POST[resource]):
+            msg = {"available": False}
+            return Response(msg)
+        else:
+            msg = {"available": True}
+            return Response(msg)
 
