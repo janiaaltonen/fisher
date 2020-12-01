@@ -1,4 +1,7 @@
-import { FormGroup } from '@angular/forms';
+import {AbstractControl, AsyncValidatorFn, FormGroup, ValidationErrors} from '@angular/forms';
+import { AuthenticationService } from '@app/_services';
+import {Observable, timer} from 'rxjs';
+import {map, switchMap} from 'rxjs/operators';
 
 export class CustomValidators {
 
@@ -13,7 +16,7 @@ export class CustomValidators {
       if (control.value !== matchingControl.value) {
         matchingControl.setErrors( { mustMatch: true });
       } else {
-        matchingControl.setErrors({ mustMatch: false });
+        matchingControl.setErrors(null);
       }
     };
   }
@@ -29,9 +32,20 @@ export class CustomValidators {
       if (control.value === matchingControl.value) {
         matchingControl.setErrors( { canNotMatch: true });
       } else {
-        matchingControl.setErrors({ canNotMatch: false });
+        matchingControl.setErrors(null);
       }
     };
   }
 
+  public static UsernameAsyncValidator(authService: AuthenticationService, time: number): AsyncValidatorFn {
+    return (control: AbstractControl): Observable<ValidationErrors> => {
+      return timer(time).pipe(
+        switchMap(() => authService.checkUsername(control.value)),
+        map(res => {
+          console.log(res);
+          return res.available ? null : {userExists: true };
+        })
+      );
+    };
+  }
 }
