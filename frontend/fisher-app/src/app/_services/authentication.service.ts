@@ -28,7 +28,6 @@ export class AuthenticationService {
     };
     return this.http.post(this.baseUrl + '/auth', body, {headers: this.httpHeaders, observe: 'response'})
       .pipe(map(resp => {
-        console.log(resp.headers.keys());
         localStorage.setItem('user', JSON.stringify(resp.body));
         this.userSubject.next(resp.body);
         return resp.body;
@@ -45,6 +44,15 @@ export class AuthenticationService {
   }
 
   signUp(formData): Observable<any> {
-    return this.http.post(this.baseUrl + '/signup', formData);
+    return this.http.post(this.baseUrl + '/signup', formData, { observe: 'response'})
+      .pipe(map(resp => {
+        localStorage.setItem('user', JSON.stringify(resp.body));
+        this.userSubject.next(resp.body);
+        return resp.body;
+      }));
+  }
+
+  checkUsername(username: string): Observable<any> {
+    return this.http.get(this.baseUrl + `/signup/username/${username}`);
   }
 }
