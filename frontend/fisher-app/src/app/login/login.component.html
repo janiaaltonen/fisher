@@ -1,31 +1,38 @@
-<div class="container p-5">
-  <div class="card m-5">
-    <h4 class="card-header">Login</h4>
-    <div class="card-body">
-      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-        <div class="form-group">
-          <label for="username"> Username</label>
-          <input type="text" formControlName="username" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.username.errors}">
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <h3 class="mt-0"> Login to Fisher account </h3>
+  </div>
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    <div class="row justify-content-center mt-3">
+      <div class="form-group col-md-6">
+        <div class="form-group required">
+          <label class="control-label mb-1 small text-info" for="username"> Username</label>
+          <input class="form-control form-control-sm" type="text" formControlName="username" id="username" [ngClass]="{ 'is-invalid': submitted && f.username.errors}">
           <div *ngIf="submitted && f.username.errors" class="invalid-feedback">
             <div *ngIf="f.username.errors.required"> Username is required</div>
           </div>
         </div>
-        <div class="form-group">
-          <label for="password"> Password</label>
-          <input type="password" formControlName="password" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.password.errors}">
+        <div class="form-group required">
+          <label class="control-label mb-1 small text-info" for="password"> Password</label>
+          <input class="form-control form-control-sm" type="password" formControlName="password" id="password" [ngClass]="{ 'is-invalid': submitted && f.password.errors}">
+          <span class="small pl-0 text-primary font-weight-bold link" (click)="resetPassword()">Salasana unohtunut?</span>
           <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
             <div *ngIf="f.password.errors.required"> Password is required</div>
           </div>
-          <span> Forgot password?</span>
         </div>
-        <div class="form-group">
-          <button [disabled]="loading" class="btn btn-primary">
-            <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
-            Login
-          </button>
-          <a> Register </a>
-        </div>
-      </form>
+      </div>
     </div>
-  </div>
+    <div class="row justify-content-center mt-3">
+      <div class="form-group col-md-6">
+        <button [disabled]="loading" class="btn btn-info btn-block md-6">
+          <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+          Login
+        </button>
+        <div class="card mt-3 pb-0">
+          <p class="text-center pt-2 pb-0 small font-weight-bold">Ei vielä käyttäjätiliä? <span class="text-primary link" (click)="toSignUp()">Rekisteröidy.</span></p>
+        </div>
+      </div>
+    </div>
+  </form>
 </div>
+
