@@ -93,10 +93,10 @@ class SignUpCheck(APIView):
         resource = ''.join(map(str, str(url).split("/")[-2:-1]))
         if resource == 'username' and Availability.username_exists(request.POST[resource]):
             msg = {"available": False}
-            return Response(msg)
+            return Response(msg, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
         elif resource == 'email' and Availability.email_exists(request.POST[resource]):
             msg = {"available": False}
-            return Response(msg)
+            return Response(msg, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
         else:
             msg = {"available": True}
             return Response(msg)
