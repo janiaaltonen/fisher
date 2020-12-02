@@ -8,10 +8,10 @@ import { AuthGuard } from './_helpers';
 const fishingStatsModule = () => import('./fishing-stats/fishing-stats.module').then(x => x.FishingStatsModule);
 
 const routes: Routes = [
-  { path: '', component: AppComponent, canActivate: [AuthGuard] },
   { path: 'login', component: LoginComponent },
   { path: 'events', loadChildren: fishingStatsModule, canActivate: [AuthGuard] },
-  { path: 'signup', component: SignUpComponent }
+  { path: 'signup', component: SignUpComponent },
+  // { path: '', pathMatch: 'full', redirectTo: 'events' }
 ];
 
 @NgModule({
