@@ -52,7 +52,11 @@ export class AuthenticationService {
       }));
   }
 
-  checkUsername(username: string): Observable<any> {
-    return this.http.get(this.baseUrl + `/signup/username/${username}`);
+  checkUsername(formData): Observable<any> {
+    return this.http.post(this.baseUrl + '/signup_check/username/', formData);
+  }
+
+  checkEmail(formData): Observable<any> {
+    return this.http.post(this.baseUrl + '/signup_check/email/', formData);
   }
 }

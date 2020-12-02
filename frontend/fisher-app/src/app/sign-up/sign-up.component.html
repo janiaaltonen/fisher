@@ -16,17 +16,18 @@
         </div>
         <div class="form-group required">
           <label class="control-label mb-1 small text-info" for="email" > Sähköposti</label>
-          <input class="form-control form-control-sm " type="email" formControlName="email" id="email" [ngClass]="{ 'is-invalid': submitted && controls.email.errors}">
-          <div *ngIf="submitted && controls.email.errors" class="invalid-feedback">
+          <input class="form-control form-control-sm " type="email" formControlName="email" id="email" [ngClass]="{ 'is-invalid': controls.email.touched && controls.email.errors}">
+          <div *ngIf="controls.email.touched && controls.email.errors" class="invalid-feedback">
             <div *ngIf="controls.email.errors.required"> Sähköpostiosoite puuttuu</div>
             <div *ngIf="controls.email.errors.pattern"> Sähköpostiosoite on virheellinen</div>
+            <div *ngIf="controls.email.errors.emailExists"> Sähköpostiosoite on jo olemassa</div>
             <div *ngFor="let error of controls.email.errors.serverError"> {{ error }} </div>
           </div>
         </div>
         <div class="form-group required">
           <label class="control-label mb-1 small text-info" for="password1"> Salasana</label>
           <input class="form-control form-control-sm" type="password" formControlName="password1" id="password1" [ngClass]="{ 'is-invalid': controls.password1.touched && controls.password1.errors}">
-          <span class="control-label small pl-0 text-secondary"> {{ pswInfoText }} </span>
+          <span class="small pl-0 text-secondary"> {{ pswInfoText }} </span>
           <div *ngIf="controls.password1.touched && controls.password1.errors" class="invalid-feedback">
             <div *ngIf="controls.password1.errors.required"> Salasana puuttuu </div>
             <div *ngIf="controls.password1.errors.minlength"> Salasanassa pitää olla vähintään 8 merkkiä </div>

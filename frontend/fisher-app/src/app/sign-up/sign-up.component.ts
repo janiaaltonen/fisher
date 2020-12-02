@@ -36,7 +36,7 @@ export class SignUpComponent implements OnInit {
       password2: ['', Validators.required],
       email: ['', [
         Validators.required,
-        Validators.pattern('^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$')]]
+        Validators.pattern('^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$')], CustomValidators.EmailAsyncValidator(this.authService, 1000)]
     }, {
       validators: [CustomValidators.MustMatch('password1', 'password2'),
         CustomValidators.CanNotMatch('username', 'password1')]

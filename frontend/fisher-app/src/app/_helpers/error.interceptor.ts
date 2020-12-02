@@ -5,7 +5,7 @@ import {
   HttpEvent,
   HttpInterceptor, HttpResponse, HttpErrorResponse
 } from '@angular/common/http';
-import {Observable, throwError} from 'rxjs';
+import {Observable, of, throwError} from 'rxjs';
 import {catchError, first, switchMap, tap} from 'rxjs/operators';
 import {AuthenticationService} from '@app/_services';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -28,6 +28,9 @@ export class ErrorInterceptor implements HttpInterceptor {
           }
           else if (err.status === 403) {
             this.auth.logout();
+          } // catch username and email check error responses and return them as "normal" responses
+          else if (err.status === 422 && err.url.includes('signup_check/username') || err.url.includes('signup_check/email')) {
+            return of(new HttpResponse({ body: err.error}));
           }
         }
         return throwError(err);

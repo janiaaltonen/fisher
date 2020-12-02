@@ -1,7 +1,8 @@
 import {AbstractControl, AsyncValidatorFn, FormGroup, ValidationErrors} from '@angular/forms';
 import { AuthenticationService } from '@app/_services';
 import {Observable, timer} from 'rxjs';
-import {map, switchMap} from 'rxjs/operators';
+import {catchError, map, switchMap} from 'rxjs/operators';
+import {HttpErrorResponse} from '@angular/common/http';
 
 export class CustomValidators {
 
@@ -39,12 +40,27 @@ export class CustomValidators {
 
   public static UsernameAsyncValidator(authService: AuthenticationService, time: number): AsyncValidatorFn {
     return (control: AbstractControl): Observable<ValidationErrors> => {
+      const formData: any = new FormData();
+      formData.append('username', control.value);
       return timer(time).pipe(
-        switchMap(() => authService.checkUsername(control.value)),
+        switchMap(() => authService.checkUsername(formData)),
         map(res => {
-          console.log(res);
-          return res.available ? null : {userExists: true };
+          return res.available ? null : { userExists: true };
         })
+      );
+    };
+  }
+
+  public static EmailAsyncValidator(authService: AuthenticationService, time: number): AsyncValidatorFn {
+    return (control: AbstractControl): Observable<ValidationErrors> => {
+      const formData = new FormData();
+      formData.append('email', control.value);
+      return timer(time).pipe(
+        switchMap(() => authService.checkEmail(formData)),
+        map( res => {
+          console.log(res);
+          return res.available ? null : { emailExists: true };
+        }),
       );
     };
   }
