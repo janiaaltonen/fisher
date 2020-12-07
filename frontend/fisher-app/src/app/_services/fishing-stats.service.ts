@@ -10,7 +10,7 @@ export class FishingStatsService {
   private baseUrl = 'http://localhost:8000';
   private httpHeaders = new HttpHeaders({'Content-type': 'application/json'});
   // quick fix to make front work with api
-  private httpHeaders2 = new HttpHeaders({'X-CSRFTOKEN': 'RnSAfCh36cxMBYg8cUsHDIo6M2T7m4ddekMKSoXVLjRa92QMdasHFs45LNTC9qLn'});
+  private httpHeaders2 = new HttpHeaders({'X-CSRFTOKEN': 'MjWZeBnIWu13ADXxwBv9ycpl3LfuWAWTmRXaSVY8xZa5uxRsZB8D4qXvqr8FFWAc'});
 
   constructor(private http: HttpClient) { }
 
