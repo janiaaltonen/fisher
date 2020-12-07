@@ -7,6 +7,7 @@ import { LayoutComponent } from './layout.component';
 import { EditComponent } from './edit.component';
 import {ReactiveFormsModule} from '@angular/forms';
 import { AddComponent } from './add.component';
+import {CustomMaterialModule} from '@app/custom-material/custom-material.module';
 
 
 
@@ -15,7 +16,8 @@ import { AddComponent } from './add.component';
   imports: [
     CommonModule,
     FishingStatsRoutingModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    CustomMaterialModule
   ]
 })
 export class FishingStatsModule { }
