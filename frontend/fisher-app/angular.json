@@ -119,6 +119,10 @@
           }
         }
       }
-    }},
-  "defaultProject": "fisher-app"
+    }
+  },
+  "defaultProject": "fisher-app",
+  "cli": {
+    "analytics": "9d9b3420-9c1a-4c3a-a7e8-e53bd15675fc"
+  }
 }

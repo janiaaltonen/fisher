@@ -20,10 +20,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cac74d2d-414d-43ed-a041-e1cea8e35ac2" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../backend/project/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/project/requirements.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend/project/settings/base/apps.py" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/project/settings/base/apps.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend/project/settings/base/middleware.py" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/project/settings/base/middleware.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend/project/settings/base/security.py" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/project/settings/base/security.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/fisher-app/angular.json" beforeDir="false" afterPath="$PROJECT_DIR$/fisher-app/angular.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/fisher-app/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/fisher-app/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/fisher-app/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/fisher-app/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/fisher-app/src/app/app.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/fisher-app/src/app/app.module.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/fisher-app/src/app/fishing-stats/fishing-stats.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/fisher-app/src/app/fishing-stats/fishing-stats.module.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/fisher-app/src/app/fishing-stats/list.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/fisher-app/src/app/fishing-stats/list.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/fisher-app/src/app/fishing-stats/list.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/fisher-app/src/app/fishing-stats/list.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/fisher-app/src/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/fisher-app/src/styles.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -41,11 +46,18 @@
   </component>
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/fisher-app" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.path.for.package.eslint" value="project" />
     <property name="node.js.path.for.package.tslint" value="project" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="settings.editor.selected.configurable" value="editor.preferences.fonts.default" />
+    <property name="ts.external.directory.path" value="$PROJECT_DIR$/fisher-app/node_modules/typescript/lib" />
+    <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="RunManager" selected="npm.Angular CLI Server">
     <configuration name="Tests (frontend)" type="JavaScriptTestRunnerKarma">
@@ -86,8 +98,12 @@
       <option name="presentableId" value="Default" />
       <updated>1597847372718</updated>
       <workItem from="1597847374327" duration="25000" />
+      <workItem from="1607363596396" duration="3443000" />
     </task>
     <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
@@ -99,11 +115,6 @@
         </entry>
       </map>
     </option>
-  </component>
-  <component name="WindowStateProjectService">
-    <state x="2663" y="297" width="424" height="484" key="FileChooserDialogImpl" timestamp="1597847397378">
-      <screen x="1920" y="0" width="1920" height="1080" />
-    </state>
-    <state x="2663" y="297" width="424" height="484" key="FileChooserDialogImpl/67.27.1853.1053/1920.0.1920.1080@1920.0.1920.1080" timestamp="1597847397378" />
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
 </project>
