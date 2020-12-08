@@ -9,6 +9,8 @@ import {FishingStatsService} from '@app/_services';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Catches} from '@app/_models/catches';
 import {Stats} from '@app/_models/stats';
+import {MatDialog} from '@angular/material/dialog';
+import {ConfirmDialogComponent, ConfirmDialogModel} from '@app/_components/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-edit',
@@ -30,7 +32,8 @@ export class EditComponent implements OnInit {
   fishSpecies = this.emptyArr;
   lures = this.emptyArr;
 
-  constructor(private formBuilder: FormBuilder, private api: FishingStatsService, private router: Router, private route: ActivatedRoute) { }
+  constructor(private formBuilder: FormBuilder, private api: FishingStatsService,
+              private router: Router, private route: ActivatedRoute, public dialog: MatDialog) { }
 
   ngOnInit(): void {
     this.methodIndex = this.route.snapshot.params.methodIndex;
@@ -147,13 +150,17 @@ export class EditComponent implements OnInit {
     this.getCatches().removeAt(catchIndex);
   }
 
-  submit(): void {
+  checkForm(): void {
+    // weight and length needs to be checked that they are numbers
+    // ugly impl so far..
     this.checkControls(this.getCatches().controls);
     if (this.form.invalid) {
       return;
     }
-    // weight and length needs to be checked that they are numbers
-    // console.log(this.form.dirty);
+    this.confirmDialog();
+  }
+
+  submit(): void {
     if (this.methodIndex > -1) {
       console.log(this.f);
       this.updateEventStat();
@@ -263,5 +270,25 @@ export class EditComponent implements OnInit {
         });
       }
     });
+  }
+
+  confirmDialog(): void {
+    // const message = 'this is test message to verify that component is working';
+    const dialogData = new ConfirmDialogModel('Tallennetaanko muutokset?', null);
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      maxWidth: '400px',
+      data: dialogData
+    });
+    dialogRef.afterClosed().subscribe((result: boolean) => {
+      if (result) {
+        this.submit();
+      }
+      return;
+    });
+  }
+
+  resetForm(): void {
+    // implementation
+    return;
   }
 }
