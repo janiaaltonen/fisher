@@ -31,6 +31,8 @@ export class EditComponent implements OnInit {
   methods = this.emptyArr;
   fishSpecies = this.emptyArr;
   lures = this.emptyArr;
+  // fish weight and length pattern
+  numberPattern = '^(\\d*[\\.|\\,])?\\d+$';
 
   constructor(private formBuilder: FormBuilder, private api: FishingStatsService,
               private router: Router, private route: ActivatedRoute, public dialog: MatDialog) { }
@@ -48,6 +50,16 @@ export class EditComponent implements OnInit {
     this.fishingEvent = history.state.data;
     this.eventStat = this.fishingEvent.stats[this.methodIndex];
     this.initForm();
+  }
+
+  get totalCatches() {
+    let amount = 0;
+    if (this.fishingEvent) {
+      this.fishingEvent.stats.forEach(value => {
+        amount = amount + value.catches.length;
+      });
+      return amount;
+    }
   }
 
   initForm(): void {
@@ -107,8 +119,8 @@ export class EditComponent implements OnInit {
       const group = this.formBuilder.group({
         id: [obj.id],
         fish_species: [obj.fish_species, Validators.required],
-        weight: [obj.weight],
-        length: [obj.length]
+        weight: [obj.weight, Validators.pattern(this.numberPattern)],
+        length: [obj.length, Validators.pattern(this.numberPattern)]
       });
       arr.push(group);
     }
@@ -119,8 +131,8 @@ export class EditComponent implements OnInit {
     return this.formBuilder.group({
       id: [null],
       fish_species: ['', Validators.required],
-      weight: [null],
-      length: [null]
+      weight: [null, Validators.pattern(this.numberPattern)],
+      length: [null, Validators.pattern(this.numberPattern)]
     });
   }
 
@@ -151,9 +163,7 @@ export class EditComponent implements OnInit {
   }
 
   checkForm(): void {
-    // weight and length needs to be checked that they are numbers
-    // ugly impl so far..
-    this.checkControls(this.getCatches().controls);
+    // return if the are errors in form
     if (this.form.invalid) {
       return;
     }
@@ -215,72 +225,38 @@ export class EditComponent implements OnInit {
     };
   }
 
-  checkControls(controls: AbstractControl[]): void {
+  replaceCommas(controls: AbstractControl[], fields: string[]): void {
     /**
-     * this implementation is quite ugly. Make it better when have time and go through this with more time
+     * check commas from control's value.
+     * Values to check are given as list
+     * If comma found replace it with dot
      */
-    let sWeight: string;
-    let sLength: string;
+    let stringNumber: string;
     controls.filter((control) => {
-      if (control.get('weight').value) {
-        sWeight = String(control.get('weight').value);
-        if (sWeight.indexOf(',') > -1) {
-          sWeight = sWeight.replace(',', '.');
-          if (!Number.isNaN(Number(sWeight))) {
-            control.patchValue( {
-              weight: sWeight
-            });
-          } else {
-            control.setErrors({
-              incorrect: true
-            });
-          }
-        } else if (Number.isNaN(Number(sWeight))){
-          console.log('isNan');
-          control.setErrors({
-            incorrect: true
-          });
+      fields.filter(e => {
+        if (control.get(e).value) {
+          stringNumber = String(control.get(e).value);
+          if (stringNumber.indexOf(',') > -1) {
+            stringNumber = stringNumber.replace(',', '.');
+            control.get(e).setValue(Number(stringNumber));
+            }
         }
-      } else {
-        control.patchValue({
-          weight: null
-        });
-      }
-      if (control.get('length').value) {
-        sLength = String(control.get('length').value);
-        if (sLength.indexOf(',') > -1) {
-          sLength = sLength.replace(',', '.');
-          if (!Number.isNaN(Number(sLength))) {
-            control.patchValue({
-              length: sLength
-            });
-          } else {
-            control.setErrors({
-              incorrect: true
-            });
-          }
-        } else if (Number.isNaN(Number(sLength))) {
-          control.setErrors({
-            incorrect: true
-          });
-        }
-      } else {
-        control.patchValue({
-          length: null
-        });
-      }
+      });
     });
   }
 
   confirmDialog(): void {
-    // const message = 'this is test message to verify that component is working';
-    const dialogData = new ConfirmDialogModel('Tallennetaanko muutokset?', null);
+    const message = 'Tallennetaanko tekemäsi muutokset?';
+    const dialogData = new ConfirmDialogModel('Vahvista tapahtuma', message);
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       maxWidth: '400px',
       data: dialogData
     });
     dialogRef.afterClosed().subscribe((result: boolean) => {
       if (result) {
+        // replace possible commas from decimal values after the confirmation to save resources
+        const fieldsToReplace = ['weight', 'length'];
+        this.replaceCommas(this.getCatches().controls, fieldsToReplace);
         this.submit();
       }
       return;
@@ -288,7 +264,17 @@ export class EditComponent implements OnInit {
   }
 
   resetForm(): void {
-    // implementation
-    return;
+    const message = 'Hylätäänkö tekemäsi muutokset?';
+    const dialogData = new ConfirmDialogModel('Vahvista tapahtuma', message);
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      maxWidth: '400px',
+      data: dialogData
+    });
+    dialogRef.afterClosed().subscribe((result: boolean) => {
+      if (result) {
+        this.router.navigate([`events/details/${this.fishingEvent.id}/`]);
+      }
+      return;
+    });
   }
 }
