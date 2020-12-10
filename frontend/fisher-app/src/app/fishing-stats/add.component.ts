@@ -38,13 +38,13 @@ export class AddComponent implements OnInit {
     );
     this.form = this.formBuilder.group({
       date: ['', Validators.required],
-      location: ['', Validators.required],
-      location_details: [''],
-      start_time: [''],
-      end_time: [''],
-      weather: [''],
-      air_temperature: [''],
-      persons: ['', Validators.required],
+      location: [null, Validators.required],
+      location_details: [null],
+      start_time: [null],
+      end_time: [null],
+      weather: [null],
+      air_temperature: [null],
+      persons: [null, Validators.required],
       stats: this.formBuilder.array([
         this.initStats()
       ])
@@ -53,8 +53,8 @@ export class AddComponent implements OnInit {
 
   initStats(): FormGroup {
     return this.formBuilder.group({
-        fishing_method: ['', Validators.required],
-        lure: [''],
+        fishing_method: [null, Validators.required],
+        lure: [null],
         lure_details: [''],
         catches: this.formBuilder.array([])
     });

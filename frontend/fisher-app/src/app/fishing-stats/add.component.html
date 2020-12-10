@@ -93,6 +93,8 @@
                   <div class="form-group required col-md-4">
                     <label class="control-label mb-1 small text-info" [attr.for]="'fishing_method' + i"> Kalastusmuoto</label>
                     <select  class="custom-select custom-select-sm" formControlName="fishing_method" [id]="'fishing_method' + i" [ngClass]="{ 'is-invalid': submitted && stat.get('fishing_method').errors }">
+                      <!-- init value to select field is empty but dont show that empty in dropdown list-->
+                      <option style="display: none" [ngValue]="null"></option>
                       <option *ngFor="let m of methods; let k=index" [value]="methods[k].key"> {{ methods[k].value }} </option>
                     </select>
                     <div *ngIf="submitted && stat.get('fishing_method').errors" class="invalid-feedback">
@@ -102,7 +104,9 @@
                   <div class="form-group col-md-4">
                     <label class="control-label mb-1 small text-info" [attr.for]="'lure' + i"> Viehe</label>
                     <select  class="custom-select custom-select-sm" formControlName="lure" [id]="'lure' + i" [ngClass]="{ 'is-invalid': submitted && stat.get('lure').errors }">
-                      <<option *ngFor="let lure of lures; let k=index" [value]="lures[k].key"> {{ lures[k].value }} </option>
+                      <!-- init value to select field is empty but dont show that empty in dropdown list-->
+                      <option style="display: none" [ngValue]="null"></option>
+                      <option *ngFor="let lure of lures; let k=index" [value]="lures[k].key"> {{ lures[k].value }} </option>
                     </select>
                   </div>
                   <div class="form-group col-md-4">
