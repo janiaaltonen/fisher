@@ -21,7 +21,19 @@ export class DetailsComponent implements OnInit {
     this.statService.getEventById(this.id).subscribe(data => this.fishingEvent = data);
   }
 
-  get statsLength() { return this.fishingEvent.stats.length; }
+  get statsLength() { return (this.fishingEvent && this.fishingEvent.stats) ? this.fishingEvent.stats.length : 0; }
+
+  get location() { return (this.fishingEvent && this.fishingEvent.location) ? this.fishingEvent.location : null; }
+
+  get locationDetails() { return (this.fishingEvent && this.fishingEvent.location_details) ? this.fishingEvent.location_details : null; }
+
+  get weather() { return (this.fishingEvent && this.fishingEvent.weather) ? this.fishingEvent.weather : null; }
+
+  get airTemp() { return (this.fishingEvent && this.fishingEvent.air_temperature) ? this.fishingEvent.air_temperature : null; }
+
+  get persons() { return (this.fishingEvent && this.fishingEvent.persons) ? this.fishingEvent.persons : null; }
+
+  get stats() { return (this.fishingEvent && this.fishingEvent.stats) ? this.fishingEvent.stats : []; }
 
   get date() {
     if (this.fishingEvent) {
@@ -31,15 +43,15 @@ export class DetailsComponent implements OnInit {
   }
 
   get startTime() {
-    if (this.fishingEvent.start_time) {
+    if (this.fishingEvent && this.fishingEvent.start_time) {
       return this.fishingEvent.start_time.substring(0, 5);
-    }
+    } else { return null; }
   }
 
   get endTime() {
-    if (this.fishingEvent.end_time) {
+    if (this.fishingEvent && this.fishingEvent.end_time) {
       return this.fishingEvent.end_time.substring(0, 5);
-    }
+    } else { return null; }
   }
 
   get lure() {
@@ -57,10 +69,10 @@ export class DetailsComponent implements OnInit {
   }
 
   get catches() {
-    if (this.fishingEvent) {
-      return this.fishingEvent.stats[this.active].catches;
+    if (this.fishingEvent && this.stats[this.active].catches) {
+      return this.stats[this.active].catches;
     }
-    return null;
+    return 0;
   }
 
   editFishingMethod(statIndex): void {
